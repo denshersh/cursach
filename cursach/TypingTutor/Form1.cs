@@ -8,16 +8,12 @@ namespace TypingTutor
             InitializeComponent();
             Class1 myClass = new Class1();
             // 1
+            //wqef
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void Form1_Activated(object sender, EventArgs e)
         {
-            Class1 b = new Class1();
-            b.a = 1;
-            Console.WriteLine($"{b.a}");
-            Class1 c = new Class1();
-            c.a = 1;
-            Console.WriteLine($"{c.a}");
+            
         }
     }
 }
