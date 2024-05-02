@@ -6,6 +6,7 @@ namespace TypingTutor
         public Form1()
         {
             InitializeComponent();
+            Class1 myClass = new Class1();
         }
 
         private void button1_Click(object sender, EventArgs e)
