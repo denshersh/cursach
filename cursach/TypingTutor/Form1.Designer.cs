@@ -87,6 +87,8 @@
             btnLArrow = new Button();
             btnRArrow = new Button();
             btnQMark = new Button();
+            textInputArea = new TextBox();
+            shownTextArea = new Label();
             SuspendLayout();
             // 
             // btn0
@@ -727,12 +729,41 @@
             btnQMark.Text = "?\n/";
             btnQMark.UseVisualStyleBackColor = true;
             // 
+            // textInputArea
+            // 
+            textInputArea.Anchor = AnchorStyles.None;
+            textInputArea.BackColor = Color.Linen;
+            textInputArea.BorderStyle = BorderStyle.None;
+            textInputArea.Font = new Font("Consolas", 12F, FontStyle.Italic, GraphicsUnit.Point, 204);
+            textInputArea.ForeColor = SystemColors.GrayText;
+            textInputArea.Location = new Point(249, 90);
+            textInputArea.MaximumSize = new Size(825, 0);
+            textInputArea.Name = "textInputArea";
+            textInputArea.Size = new Size(416, 24);
+            textInputArea.TabIndex = 1;
+            textInputArea.KeyDown += textInputArea_KeyDown;
+            textInputArea.KeyUp += textInputArea_KeyUp;
+            // 
+            // shownTextArea
+            // 
+            shownTextArea.AutoSize = true;
+            shownTextArea.Font = new Font("Consolas", 12F, FontStyle.Italic, GraphicsUnit.Point, 204);
+            shownTextArea.ForeColor = SystemColors.WindowText;
+            shownTextArea.Location = new Point(12, 128);
+            shownTextArea.MaximumSize = new Size(825, 0);
+            shownTextArea.Name = "shownTextArea";
+            shownTextArea.Size = new Size(824, 46);
+            shownTextArea.TabIndex = 2;
+            shownTextArea.Text = "some text some text some text some text some text some text some text some text";
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.Linen;
             ClientSize = new Size(927, 504);
+            Controls.Add(shownTextArea);
+            Controls.Add(textInputArea);
             Controls.Add(btnMinus);
             Controls.Add(btnPlus);
             Controls.Add(btnLBracket);
@@ -802,9 +833,8 @@
             Activated += Form1_Activated;
             SizeChanged += Form1_SizeChanged;
             Paint += Form1_Paint;
-            KeyDown += Form1_KeyDown;
-            KeyUp += Form1_KeyUp;
             ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
@@ -847,5 +877,7 @@
         private Button btnM;
         private Button btnSpace, btnRAlt, btnLAlt, btnRCtrl, btnLCtrl, btnLShift, btnRShift, btnCapsLock, btnBackspace, btnTab, btnEnter;
         private Button btnMinus, btnPlus, btnLBracket, btnRBracket, btnBackSlash, btnColon, btnDoubleQuotes, btnTilda, btnLArrow, btnRArrow, btnQMark;
+        private TextBox textInputArea;
+        private Label shownTextArea;
     }
 }

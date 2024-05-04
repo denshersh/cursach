@@ -105,9 +105,32 @@ namespace TypingTutor
             e.Graphics.DrawLine(lineColor, pointStart, pointEnd);
         }
 
+        private void DrawTextInputArea()
+        {
+            int pointStartX = (this.ClientSize.Width - 825) / 2;
+            int pointEndX = this.ClientSize.Width - pointStartX * 2;
+            int pointY = this.ClientSize.Height - 400;
+            Point pointStart = new Point(pointStartX, pointY);
+            Point pointEnd = new Point(pointEndX, pointY);
+            textInputArea.Location = new Point(pointStartX, pointY);
+            textInputArea.Size = new Size(pointEndX, 1);    // height is automatically set
+        }
+
+        private void DrawShownTextArea()
+        {
+            int pointStartX = (this.ClientSize.Width - 825) / 2;
+            int pointEndX = this.ClientSize.Width - pointStartX * 2;
+            int pointY = this.ClientSize.Height - 355;
+            Point pointStart = new Point(pointStartX, pointY);
+            Point pointEnd = new Point(pointEndX, pointY);
+            shownTextArea.Location = new Point(pointStartX, pointY);
+        }
+
         private void Form1_Activated(object sender, EventArgs e)
         {
             DrawKeyBoardLayout();
+            DrawTextInputArea();
+            DrawShownTextArea();
         }
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
@@ -118,7 +141,7 @@ namespace TypingTutor
             this.Invalidate();
         }
 
-        private void Form1_KeyDown(object sender, KeyEventArgs e)
+        private void textInputArea_KeyDown(object sender, KeyEventArgs e)
         {
             // Check key state for Ctrl, Shift and Alt
             bool leftCtrlPressed = (GetKeyState(Keys.LControlKey) & 0x8000) != 0;
@@ -204,7 +227,7 @@ namespace TypingTutor
             }
         }
 
-        private void Form1_KeyUp(object sender, KeyEventArgs e)
+        private void textInputArea_KeyUp(object sender, KeyEventArgs e)
         {
             // Check key state for Ctrl, Shift and Alt
             bool leftCtrlPressed = (GetKeyState(Keys.LControlKey) & 0x8000) == 0;
@@ -283,6 +306,5 @@ namespace TypingTutor
                 case Keys.OemQuestion: btnQMark.BackColor = System.Drawing.SystemColors.ControlLight; break; // question mark
             }
         }
-
     }
 }
