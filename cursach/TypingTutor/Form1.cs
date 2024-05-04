@@ -109,21 +109,19 @@ namespace TypingTutor
         {
             int pointStartX = (this.ClientSize.Width - 825) / 2;
             int pointEndX = this.ClientSize.Width - pointStartX * 2;
-            int pointY = this.ClientSize.Height - 400;
+            int pointY = (this.ClientSize.Height - 290) / 2;
             Point pointStart = new Point(pointStartX, pointY);
-            Point pointEnd = new Point(pointEndX, pointY);
-            textInputArea.Location = new Point(pointStartX, pointY);
+            textInputArea.Location = pointStart;
             textInputArea.Size = new Size(pointEndX, 1);    // height is automatically set
         }
 
         private void DrawShownTextArea()
         {
             int pointStartX = (this.ClientSize.Width - 825) / 2;
-            int pointEndX = this.ClientSize.Width - pointStartX * 2;
-            int pointY = this.ClientSize.Height - 355;
+            // int pointEndX = this.ClientSize.Width - pointStartX * 2;
+            int pointY = (this.ClientSize.Height - 215) / 2;
             Point pointStart = new Point(pointStartX, pointY);
-            Point pointEnd = new Point(pointEndX, pointY);
-            shownTextArea.Location = new Point(pointStartX, pointY);
+            shownTextArea.Location = pointStart;
         }
 
         private void Form1_Activated(object sender, EventArgs e)

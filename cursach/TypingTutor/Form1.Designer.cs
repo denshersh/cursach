@@ -746,6 +746,7 @@
             // 
             // shownTextArea
             // 
+            shownTextArea.Anchor = AnchorStyles.None;
             shownTextArea.AutoSize = true;
             shownTextArea.Font = new Font("Consolas", 12F, FontStyle.Italic, GraphicsUnit.Point, 204);
             shownTextArea.ForeColor = SystemColors.WindowText;
