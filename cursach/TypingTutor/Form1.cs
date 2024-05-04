@@ -48,11 +48,11 @@ namespace TypingTutor
             Button[] secondRow = new Button[] { btnQ, btnW, btnE, btnR, btnT, btnY, btnU, btnI, btnO, btnP, btnLBracket, btnRBracket }; // + btnTab (start) + btnBackSlash (end)
             Button[] thirdRow = new Button[] { btnA, btnS, btnD, btnF, btnG, btnH, btnJ, btnK, btnL, btnColon, btnDoubleQuotes }; // + btnCapsLock (start) + btnEnter (end)
             Button[] fourthRow = new Button[] { btnZ, btnX, btnC, btnV, btnB, btnN, btnM, btnLArrow, btnRArrow, btnQMark }; // + btnLShift (start) + btnRShift (end)
-            
+
             Point endPos;
             Point startPos = new Point(keyboardLayoutXPos, keyboardLayoutYPos);
             int extendSize;
-            
+
             // row 0
             endPos = DrawKeysRow(firstRow, 0, startPos);
             extendSize = 55;
@@ -94,9 +94,28 @@ namespace TypingTutor
             DrawKey(btnRCtrl, extendSize, endPos);
         }
 
+        private void DrawSplitter(PaintEventArgs e)
+        {
+            Pen lineColor = new Pen(Color.FromArgb(30, 60, 90), 4);
+            int pointStartX = (this.ClientSize.Width - 825) / 2;
+            int pointEndX = this.ClientSize.Width - pointStartX;
+            int pointY = (this.ClientSize.Height - 225) / 2;
+            Point pointStart = new Point(pointStartX, pointY);
+            Point pointEnd = new Point(pointEndX, pointY);
+            e.Graphics.DrawLine(lineColor, pointStart, pointEnd);
+        }
+
         private void Form1_Activated(object sender, EventArgs e)
         {
             DrawKeyBoardLayout();
+        }
+        private void Form1_Paint(object sender, PaintEventArgs e)
+        {
+            DrawSplitter(e);
+        }
+        private void Form1_SizeChanged(object sender, EventArgs e)
+        {
+            this.Invalidate();
         }
 
         private void Form1_KeyDown(object sender, KeyEventArgs e)
@@ -264,5 +283,6 @@ namespace TypingTutor
                 case Keys.OemQuestion: btnQMark.BackColor = System.Drawing.SystemColors.ControlLight; break; // question mark
             }
         }
+
     }
 }

@@ -800,6 +800,8 @@
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Typing Tutor pre-alpha 0.2.0";
             Activated += Form1_Activated;
+            SizeChanged += Form1_SizeChanged;
+            Paint += Form1_Paint;
             KeyDown += Form1_KeyDown;
             KeyUp += Form1_KeyUp;
             ResumeLayout(false);
