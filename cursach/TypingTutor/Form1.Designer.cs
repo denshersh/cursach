@@ -87,7 +87,6 @@
             btnLArrow = new Button();
             btnRArrow = new Button();
             btnQMark = new Button();
-            label1 = new Label();
             SuspendLayout();
             // 
             // btn0
@@ -728,22 +727,12 @@
             btnQMark.Text = "?\n/";
             btnQMark.UseVisualStyleBackColor = true;
             // 
-            // label1
-            // 
-            label1.AutoSize = true;
-            label1.Location = new Point(316, 94);
-            label1.Name = "label1";
-            label1.Size = new Size(50, 20);
-            label1.TabIndex = 1;
-            label1.Text = "label1";
-            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.Linen;
             ClientSize = new Size(927, 504);
-            Controls.Add(label1);
             Controls.Add(btnMinus);
             Controls.Add(btnPlus);
             Controls.Add(btnLBracket);
@@ -809,12 +798,11 @@
             MinimumSize = new Size(843, 451);
             Name = "Form1";
             StartPosition = FormStartPosition.CenterScreen;
-            Text = "Typing Tutor pre-alpha 0.1.0";
+            Text = "Typing Tutor pre-alpha 0.2.0";
             Activated += Form1_Activated;
             KeyDown += Form1_KeyDown;
             KeyUp += Form1_KeyUp;
             ResumeLayout(false);
-            PerformLayout();
         }
 
         #endregion
@@ -857,6 +845,5 @@
         private Button btnM;
         private Button btnSpace, btnRAlt, btnLAlt, btnRCtrl, btnLCtrl, btnLShift, btnRShift, btnCapsLock, btnBackspace, btnTab, btnEnter;
         private Button btnMinus, btnPlus, btnLBracket, btnRBracket, btnBackSlash, btnColon, btnDoubleQuotes, btnTilda, btnLArrow, btnRArrow, btnQMark;
-        private Label label1;
     }
 }

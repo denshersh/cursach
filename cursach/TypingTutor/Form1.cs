@@ -9,87 +9,106 @@ namespace TypingTutor
 {
     public partial class Form1 : Form
     {
+        const int buttonWidth = 55, buttonHeight = 45;
+        const int keyboardLayoutXPos = 51, keyboardLayoutYPos = 229;
         [DllImport("user32.dll")]
         public static extern short GetKeyState(Keys key);
         public Form1()
         {
             InitializeComponent();
         }
+        private Point DrawKeysRow(Button[] buttons, int row, Point pos)
+        {
+            int col;
+            Font font1 = new Font("Consolas", 9f);
+            for (col = 0; col < buttons.Length; col++)
+            {
+                //buttons[col].TabIndex = col + (row * buttons.Length) + 1;
+                buttons[col].Font = font1;
+                buttons[col].BackColor = System.Drawing.SystemColors.ControlLight;
+                buttons[col].Size = new System.Drawing.Size(buttonWidth, buttonHeight);
+                buttons[col].Location = new Point(pos.X + (col * buttonWidth), pos.Y);
+            }
+            Point nextKeyPos = new Point(buttons[col - 1].Location.X + buttonWidth, buttons[col - 1].Location.Y);
+            return nextKeyPos;
+        }
+        private Point DrawKey(Button button, int extendSizeX, Point pos)
+        {
+            Font font1 = new Font("Consolas", 9f);
+            button.Font = font1;
+            button.BackColor = System.Drawing.SystemColors.ControlLight;
+            button.Size = new System.Drawing.Size(buttonWidth + extendSizeX, buttonHeight);
+            button.Location = pos;
+            Point nextKeyPos = new Point(button.Location.X + button.Size.Width, button.Location.Y);
+            return nextKeyPos;
+        }
+        private void DrawKeyBoardLayout()
+        {
+            Button[] firstRow = new Button[] { btnTilda, btn1, btn2, btn3, btn4, btn5, btn6, btn7, btn8, btn9, btn0, btnMinus, btnPlus }; // + btnBackspace
+            Button[] secondRow = new Button[] { btnQ, btnW, btnE, btnR, btnT, btnY, btnU, btnI, btnO, btnP, btnLBracket, btnRBracket }; // + btnTab (start) + btnBackSlash (end)
+            Button[] thirdRow = new Button[] { btnA, btnS, btnD, btnF, btnG, btnH, btnJ, btnK, btnL, btnColon, btnDoubleQuotes }; // + btnCapsLock (start) + btnEnter (end)
+            Button[] fourthRow = new Button[] { btnZ, btnX, btnC, btnV, btnB, btnN, btnM, btnLArrow, btnRArrow, btnQMark }; // + btnLShift (start) + btnRShift (end)
+            
+            Point endPos;
+            Point startPos = new Point(keyboardLayoutXPos, keyboardLayoutYPos);
+            int extendSize;
+            
+            // row 0
+            endPos = DrawKeysRow(firstRow, 0, startPos);
+            extendSize = 55;
+            DrawKey(btnBackspace, extendSize, endPos);
+
+            // row 1
+            extendSize = 28;
+            startPos.Y += buttonHeight;
+            endPos = DrawKey(btnTab, extendSize, startPos);
+            endPos = DrawKeysRow(secondRow, 1, endPos);
+            extendSize = 27;
+            DrawKey(btnBackSlash, extendSize, endPos);
+
+            // row 2
+            extendSize = 40;
+            startPos.Y += buttonHeight;
+            endPos = DrawKey(btnCapsLock, extendSize, startPos);
+            endPos = DrawKeysRow(thirdRow, 2, endPos);
+            extendSize = buttonWidth + 15;
+            DrawKey(btnEnter, extendSize, endPos);
+
+            // row 3
+            extendSize = 15 + buttonWidth;
+            startPos.Y += buttonHeight;
+            endPos = DrawKey(btnLShift, extendSize, startPos);
+            endPos = DrawKeysRow(fourthRow, 3, endPos);
+            extendSize = 40 + buttonWidth;
+            DrawKey(btnRShift, extendSize, endPos);
+
+            // row 4
+            extendSize = 28;
+            startPos.Y += buttonHeight;
+            endPos = DrawKey(btnLCtrl, extendSize, startPos);
+            endPos = DrawKey(btnLAlt, extendSize, endPos);
+            extendSize = 53 + 7 * buttonWidth;
+            endPos = DrawKey(btnSpace, extendSize, endPos);
+            extendSize = 28;
+            endPos = DrawKey(btnRAlt, extendSize, endPos);
+            DrawKey(btnRCtrl, extendSize, endPos);
+        }
 
         private void Form1_Activated(object sender, EventArgs e)
         {
-            Button[] numbersButtons = new Button[] { btn0, btn1, btn2, btn3, btn4, btn5, btn6, btn7, btn8, btn9 };
-            Button[] lettersButtons = new Button[] { btnQ, btnW, btnE, btnR, btnT, btnY, btnU, btnI, btnO, btnP,
-                    btnA, btnS, btnD, btnF, btnG, btnH, btnJ, btnK, btnL, btnZ, btnX, btnC, btnV, btnB, btnN, btnM};
-            // Button btnSpace, btnAlt, btnCtrl, btnLShift, btnRShift, btnCapsLock, btnBackspace, btnTab;
-
-            //foreach (var b in numbersButtons)
-            //    b.Click += new System.EventHandler(this.Number_Click);
-
-            //foreach (var b in lettersButtons)
-            //    b.Click += new System.EventHandler(this.Operation_Click);
-
-            // etc
-
-            Button[][] allButtons =
-            {
-                new Button[] {btnTilda, btn1, btn2, btn3, btn4, btn5, btn6, btn7, btn8, btn9, btn0, btnMinus, btnPlus, null, btnBackspace },
-                new Button[] {null, btnTab, btnQ, btnW, btnE, btnR, btnT, btnY, btnU, btnI, btnO, btnP, btnLBracket, btnRBracket, btnBackSlash },
-                new Button[] {null, btnCapsLock, btnA, btnS, btnD, btnF, btnG, btnH, btnJ, btnK, btnL, btnColon, btnDoubleQuotes, null, btnEnter },
-                new Button[] {null, null, btnLShift, btnZ, btnX, btnC, btnV, btnB, btnN, btnM, btnLArrow, btnRArrow, btnQMark, null, btnRShift},
-                new Button[] {null, btnLCtrl, null, btnLAlt, null, null, null, null, null, null, btnSpace, null, btnRAlt, null, btnRCtrl}
-            };
-
-            // programmatically set the location
-            int col, row, sizeMultiplier = 1;
-            int buttonWidth = 55, buttonHeight = 45;
-            int keyboardLayoutXPos = 51, keyboardLayoutYPos = 229;
-            bool needToExtend = false;
-            Font font1 = new Font("Consolas", 9f);
-            for (row = 0; row < allButtons.Length; row++)
-            {
-                Button[] ButtonCol = allButtons[row];
-                for (col = 0; col < ButtonCol.Length; col++)
-                {
-                    if (ButtonCol[col] != null)
-                    {
-                        ButtonCol[col].TabIndex = col + (row * allButtons.Length) + 1;
-                        ButtonCol[col].Font = font1;
-                        ButtonCol[col].BackColor = System.Drawing.SystemColors.ControlLight;
-                        if (needToExtend)
-                        {
-                            ButtonCol[col].Size = new System.Drawing.Size(sizeMultiplier * buttonWidth, buttonHeight); // width height
-                            ButtonCol[col].Location = new Point(keyboardLayoutXPos + ((col + 1 - sizeMultiplier) * buttonWidth), // startX width height startY
-                                                          keyboardLayoutYPos + (row * buttonHeight));
-
-                            needToExtend = false;
-                            sizeMultiplier = 1;
-                        }
-                        else
-                        {
-                            ButtonCol[col].Size = new System.Drawing.Size(buttonWidth, buttonHeight); // width height
-                            ButtonCol[col].Location = new Point(keyboardLayoutXPos + (col * buttonWidth), // startX width height startY
-                                                          keyboardLayoutYPos + (row * buttonHeight));
-                        }
-                    }
-                    else if (ButtonCol[col] == null)
-                    {
-                        sizeMultiplier++;
-                        needToExtend = true;
-                    }
-                }
-            }
+            DrawKeyBoardLayout();
         }
 
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
-            // Check key state for Ctrl, Shift è Alt
+            // Check key state for Ctrl, Shift and Alt
             bool leftCtrlPressed = (GetKeyState(Keys.LControlKey) & 0x8000) != 0;
             bool rightCtrlPressed = (GetKeyState(Keys.RControlKey) & 0x8000) != 0;
             bool leftShiftPressed = (GetKeyState(Keys.LShiftKey) & 0x8000) != 0;
             bool rightShiftPressed = (GetKeyState(Keys.RShiftKey) & 0x8000) != 0;
             bool leftAltPressed = (GetKeyState(Keys.LMenu) & 0x8000) != 0; // LMenu is left Alt
             bool rightAltPressed = (GetKeyState(Keys.RMenu) & 0x8000) != 0; // RMenu is right Alt
+
             if (leftCtrlPressed)
                 btnLCtrl.BackColor = Color.FromArgb(209, 207, 207); // Color for left Ctrl
             if (rightCtrlPressed)
@@ -102,11 +121,6 @@ namespace TypingTutor
                 btnLAlt.BackColor = Color.FromArgb(209, 207, 207); // Color for left Alt
             if (rightAltPressed)
                 btnRAlt.BackColor = Color.FromArgb(209, 207, 207); // Color for right Alt
-
-            if (Control.IsKeyLocked(Keys.CapsLock))
-                btnCapsLock.BackColor = Color.FromArgb(209, 207, 207);
-            else
-                btnCapsLock.BackColor = System.Drawing.SystemColors.ControlLight;
 
             switch (e.KeyCode)
             {
@@ -147,7 +161,13 @@ namespace TypingTutor
                 case Keys.D8: btn8.BackColor = Color.FromArgb(209, 207, 207); break;
                 case Keys.D9: btn9.BackColor = Color.FromArgb(209, 207, 207); break;
                 case Keys.Space: btnSpace.BackColor = Color.FromArgb(209, 207, 207); break;
-                //case Keys.CapsLock: btnCapsLock.BackColor = Color.FromArgb(209, 207, 207); break;
+                case Keys.CapsLock:
+                    {
+                        if (Control.IsKeyLocked(Keys.CapsLock))
+                            btnCapsLock.BackColor = Color.FromArgb(209, 207, 207);
+                        else
+                            btnCapsLock.BackColor = System.Drawing.SystemColors.ControlLight; break;
+                    }
                 case Keys.Back: btnBackspace.BackColor = Color.FromArgb(209, 207, 207); break;
                 case Keys.Tab: btnTab.BackColor = Color.FromArgb(209, 207, 207); break;
                 case Keys.Enter: btnEnter.BackColor = Color.FromArgb(209, 207, 207); break;
@@ -167,13 +187,14 @@ namespace TypingTutor
 
         private void Form1_KeyUp(object sender, KeyEventArgs e)
         {
-            // Check key state for Ctrl, Shift è Alt
+            // Check key state for Ctrl, Shift and Alt
             bool leftCtrlPressed = (GetKeyState(Keys.LControlKey) & 0x8000) == 0;
             bool rightCtrlPressed = (GetKeyState(Keys.RControlKey) & 0x8000) == 0;
             bool leftShiftPressed = (GetKeyState(Keys.LShiftKey) & 0x8000) == 0;
             bool rightShiftPressed = (GetKeyState(Keys.RShiftKey) & 0x8000) == 0;
             bool leftAltPressed = (GetKeyState(Keys.LMenu) & 0x8000) == 0; // LMenu is left Alt
             bool rightAltPressed = (GetKeyState(Keys.RMenu) & 0x8000) == 0; // RMenu is right Alt
+
             if (leftCtrlPressed)
                 btnLCtrl.BackColor = System.Drawing.SystemColors.ControlLight; // Color for left Ctrl
             if (rightCtrlPressed)
