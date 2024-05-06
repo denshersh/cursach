@@ -23,7 +23,7 @@ namespace TypingTutor
             Font font1 = new Font("Consolas", 9f);
             for (col = 0; col < buttons.Length; col++)
             {
-                //buttons[col].TabIndex = col + (row * buttons.Length) + 1;
+                //buttons[col].TabIndex = col + (row * buttons.Length) + 1; idk
                 buttons[col].Font = font1;
                 buttons[col].BackColor = System.Drawing.SystemColors.ControlLight;
                 buttons[col].Size = new System.Drawing.Size(buttonWidth, buttonHeight);
