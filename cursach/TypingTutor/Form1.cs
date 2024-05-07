@@ -304,5 +304,10 @@ namespace TypingTutor
                 case Keys.OemQuestion: btnQMark.BackColor = System.Drawing.SystemColors.ControlLight; break; // question mark
             }
         }
+
+        private void textInputArea_TextChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }
