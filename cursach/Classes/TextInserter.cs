@@ -1,65 +1,76 @@
 ﻿using System.Globalization;
+using System.Reflection.PortableExecutable;
 using System.Text;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Classes
 {
     public class TextInserter
     {
-        public required string ParsedText;
-        public required string Buffer;
-        public required string TextToInsert;
-        public required string ErrorMsg;
+        public string[] ParsedText { get; set; }
+        public string Buffer;
+        public string TextToInsert;
+        public string ErrorMsg;
         public uint StringLength;
         private bool InsertingStatus;
         const uint StandardClientStringLength = 75;
 
         public TextInserter(string PathToFile, uint StringLength)
         {
+            ErrorMsg = "";
             if (!File.Exists(PathToFile)) { InsertingStatus = false; throw new FileNotFoundException("Can't find file"); }
             else 
             {
-                Encoding encoding = Encoding.UTF8;
+                Encoding UTF8_Encoding = Encoding.UTF8;
                 if (new FileInfo(PathToFile).Length == 0)
                 {
                     InsertingStatus = false;
                     ErrorMsg = "Unable to copy text from an empty file";
                 }
-                else if (encoding != GetEncoding(PathToFile))
+                else if (UTF8_Encoding != GetEncoding(PathToFile))
                 {
-                    InsertingStatus = false;
-                    ErrorMsg = "Unable to copy text from a file with non-UTF8 encoding";
+                    InsertingStatus = false; throw new EncoderFallbackException("Unable to copy text from a file with non-UTF8 encoding");
                 }
                 else if (StringLength == 0)
                 {
                     InsertingStatus = false;
                     ErrorMsg = "\\'TextInserter.StringLength = 0\\'\nCan't insert text with zero-StringLength";
                 }
+                InsertingStatus = true;
                 ParsedText = ParseTextFromFile(PathToFile);
             }
         }
 
         public TextInserter(string PathToFile) : this(PathToFile, StandardClientStringLength)
         { }
+        
+        /*  Crutch which works
+        public string ConvertStringArrayToString ()
+        {
+            return string.Join("\n", ParsedText);
+        }
+        */
 
-        private string ParseTextFromFile (string PathToFile)
+        private string[] ParseTextFromFile (string PathToFile)
         {
             if (InsertingStatus == false)
             {
-                return "";
+                return null;
             }
-            return File.OpenText(PathToFile).ToString();  // can handle only 1 073 741 823 symbols (INT32_MAX / 2)
+
+            return System.IO.File.ReadAllLines(PathToFile);
         }
 
         public string InsertLine(uint StringLength) // Getting the length from user
         {
-
+            return "";
         }
 
         public string InsertLine() // Standard Client String Length by default
         {
-
+            return "";
         }
-        public static Encoding GetEncoding(string filename)
+        private static Encoding GetEncoding(string filename)
         {
             // Read the BOM (byte order mark)
             var bom = new byte[4];
