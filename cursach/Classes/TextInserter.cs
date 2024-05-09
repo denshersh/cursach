@@ -63,13 +63,14 @@ namespace Classes
 
         public string InsertLine(uint StringLength) // Getting the length from user
         {
-            return "";
+            throw new NotImplementedException();
         }
 
         public string InsertLine() // Standard Client String Length by default
         {
-            return "";
+            throw new NotImplementedException();
         }
+
         private static Encoding GetEncoding(string filename)
         {
             // Read the BOM (byte order mark)
