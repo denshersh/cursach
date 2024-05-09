@@ -15,6 +15,8 @@ namespace Classes
             ReferenceString = referenceString;
         }
 
+        public void SetReferenceString(string referenceString) { ReferenceString = referenceString; }
+
         public bool ValidateChar(char inputChar, int charPosInString)
         {
             if (inputChar == ReferenceString[charPosInString])
