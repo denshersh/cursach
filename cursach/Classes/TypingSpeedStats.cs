@@ -9,21 +9,41 @@ namespace Classes
 {
     public class TypingSpeedStats : Stats
     {
-        protected float TypingSpeed { get; set; }    // words per minute
+        protected float TypingSpeed;    // words per minute
         private Stopwatch stopwatch;
         const float SecondsInAMinute = 60.0f;
 
-        public TypingSpeedStats() : base("w/m")
+        public TypingSpeedStats() : base(" w/m")
         {
             stopwatch = new Stopwatch();
+        }
+
+        public void StartMonitoringSpeed()
+        {
             stopwatch.Start();
         }
 
-        public override void CalculateStat(uint NumberOfCorrectlyTypedWords)
+        public void StopMonitoringSpeed()
         {
             stopwatch.Stop();
-            TypingSpeed = ((float)NumberOfCorrectlyTypedWords / stopwatch.ElapsedMilliseconds) * 1000.0f * SecondsInAMinute;
+        }
+
+        public override void CalculateStat(uint NumberOfCorrectEnteredWords)
+        {
+            stopwatch.Stop();
+            TypingSpeed = (float)NumberOfCorrectEnteredWords / (stopwatch.ElapsedMilliseconds / 1000.0f) * SecondsInAMinute;
             stopwatch.Start();
+
+        }
+
+        public float GetTypingSpeed()
+        {
+            return TypingSpeed;
+        }
+
+        public float GetStopWatchElapsedTime()
+        {
+            return stopwatch.ElapsedMilliseconds / 1000.0f;
         }
     }
 }
