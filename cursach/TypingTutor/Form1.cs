@@ -11,11 +11,30 @@ namespace TypingTutor
     {
         const int buttonWidth = 55, buttonHeight = 45;
         const int keyboardLayoutXPos = 51, keyboardLayoutYPos = 229;
+        //
+        public uint NumberOfCorrectEnteredWords;
+        public uint NumberOfCorrectEnteredChars;
+        public TextInserter textInserter;
+        public TextValidator textValidator;
+        public CharacterAccuracyStats CAS;
+        public WordAccuracyStats WAS;
+        static TypingSpeedStats TSS = new TypingSpeedStats();
+        //
         [DllImport("user32.dll")]
         public static extern short GetKeyState(Keys key);
         public Form1()
         {
             InitializeComponent();
+            textValidator = new TextValidator(shownTextArea.Text);
+            CAS = new CharacterAccuracyStats();
+            WAS = new WordAccuracyStats();
+            NumberOfCorrectEnteredWords = 0;
+            NumberOfCorrectEnteredChars = 0;
+            /* Works fine
+            textInserter = new TextInserter("..\\..\\..\\..\\texts\\txttxt.txt");
+            shownTextArea.Text = textInserter.ParsedText[0];
+            */
+
         }
         private Point DrawKeysRow(Button[] buttons, int row, Point pos)
         {
@@ -129,6 +148,7 @@ namespace TypingTutor
             DrawKeyBoardLayout();
             DrawTextInputArea();
             DrawShownTextArea();
+
         }
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
@@ -139,8 +159,66 @@ namespace TypingTutor
             this.Invalidate();
         }
 
+        private void ButtonReady_Click(object sender, EventArgs e)
+        {
+            ButtonReady.Enabled = false;
+            ButtonReady.Visible = false;
+            textInputArea.Focus();
+            TSS.StartMonitoringSpeed();
+        }
+
+        // Unnecessary (maybe)
+        private void textInputArea_Enter(object sender, EventArgs e)
+        {
+
+        }
+
+        // Need to add some logic to distinguish wether the string ends woth new line
+        private void textInputArea_TextChanged(object sender, EventArgs e)
+        {
+            bool SubstringPassed;
+            char CurrentChar;
+            string CurrentString = textInputArea.Text;
+            int CurrentCharPosInString;
+
+            if (CurrentString.Length > 0)
+            {
+                CurrentCharPosInString = CurrentString.Length - 1;
+                CurrentChar = CurrentString[CurrentCharPosInString];
+
+                SubstringPassed = textValidator.ValidateSubString(CurrentString, 0);    // current substring starts from 0 index
+                if (SubstringPassed)
+                {
+                    TSS.StopMonitoringSpeed();
+                    NumberOfCorrectEnteredChars++;
+                    if (CurrentChar == ' ')
+                    {
+                        NumberOfCorrectEnteredWords++;
+                        testWordsCounter.Text = NumberOfCorrectEnteredWords.ToString();
+                    }
+                    textInputArea.BackColor = Color.Linen;
+                    TSS.CalculateStat(NumberOfCorrectEnteredChars);
+                    testTSS.Text = TSS.GetTypingSpeed().ToString();
+                    TSS.StartMonitoringSpeed();
+                }
+                else
+                {
+                    TSS.StopMonitoringSpeed();
+                    textInputArea.BackColor = Color.Yellow;
+                    TSS.CalculateStat(NumberOfCorrectEnteredChars);
+                    testTSS.Text = TSS.GetTypingSpeed().ToString();
+                    TSS.StartMonitoringSpeed();
+                }
+            }
+            else
+            {
+                TSS.StopMonitoringSpeed();
+            }
+        }
+
         private void textInputArea_KeyDown(object sender, KeyEventArgs e)
         {
+            // textInputArea.Text = textInserter.ParsedText;
             // Check key state for Ctrl, Shift and Alt
             bool leftCtrlPressed = (GetKeyState(Keys.LControlKey) & 0x8000) != 0;
             bool rightCtrlPressed = (GetKeyState(Keys.RControlKey) & 0x8000) != 0;
@@ -303,11 +381,6 @@ namespace TypingTutor
                 case Keys.OemPeriod: btnRArrow.BackColor = System.Drawing.SystemColors.ControlLight; break; // period (right arrow)
                 case Keys.OemQuestion: btnQMark.BackColor = System.Drawing.SystemColors.ControlLight; break; // question mark
             }
-        }
-
-        private void textInputArea_TextChanged(object sender, EventArgs e)
-        {
-
         }
     }
 }
