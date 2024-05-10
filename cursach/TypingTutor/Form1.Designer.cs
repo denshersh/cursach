@@ -89,6 +89,18 @@
             btnQMark = new Button();
             textInputArea = new TextBox();
             shownTextArea = new Label();
+            ButtonReady = new Button();
+            AccuarcyLabel = new Label();
+            SpeedLabel = new Label();
+            TotalWordsLabel = new Label();
+            MetricsLabel = new Label();
+            TTSPrompt = new Label();
+            CASPrompt = new Label();
+            TotalWordsPrompt = new Label();
+            CurrentKeyLabel = new Label();
+            BestTypingSpeedLabel = new Label();
+            CurrentKeyPrompt = new Label();
+            BestTypingSpeedPrompt = new Label();
             SuspendLayout();
             // 
             // btn0
@@ -734,15 +746,18 @@
             textInputArea.Anchor = AnchorStyles.None;
             textInputArea.BackColor = Color.Linen;
             textInputArea.BorderStyle = BorderStyle.None;
+            textInputArea.Enabled = false;
             textInputArea.Font = new Font("Consolas", 12F, FontStyle.Italic, GraphicsUnit.Point, 204);
             textInputArea.ForeColor = SystemColors.GrayText;
-            textInputArea.Location = new Point(249, 80);
+            textInputArea.Location = new Point(258, 213);
             textInputArea.MaximumSize = new Size(825, 0);
-            textInputArea.MaxLength = 75;
+            textInputArea.MaxLength = 65000;
             textInputArea.Name = "textInputArea";
             textInputArea.Size = new Size(416, 24);
             textInputArea.TabIndex = 1;
+            textInputArea.TabStop = false;
             textInputArea.TextChanged += textInputArea_TextChanged;
+            textInputArea.Enter += textInputArea_Enter;
             textInputArea.KeyDown += textInputArea_KeyDown;
             textInputArea.KeyUp += textInputArea_KeyUp;
             // 
@@ -752,12 +767,166 @@
             shownTextArea.AutoSize = true;
             shownTextArea.Font = new Font("Consolas", 12F, FontStyle.Italic, GraphicsUnit.Point, 204);
             shownTextArea.ForeColor = SystemColors.WindowText;
-            shownTextArea.Location = new Point(12, 118);
+            shownTextArea.Location = new Point(40, 254);
             shownTextArea.MaximumSize = new Size(825, 0);
             shownTextArea.Name = "shownTextArea";
             shownTextArea.Size = new Size(824, 23);
             shownTextArea.TabIndex = 2;
             shownTextArea.Text = "some text some text some text some text some text some text some text some ";
+            // 
+            // ButtonReady
+            // 
+            ButtonReady.Anchor = AnchorStyles.None;
+            ButtonReady.Location = new Point(440, 12);
+            ButtonReady.Name = "ButtonReady";
+            ButtonReady.Size = new Size(64, 36);
+            ButtonReady.TabIndex = 3;
+            ButtonReady.Text = "Ready";
+            ButtonReady.UseVisualStyleBackColor = true;
+            ButtonReady.Click += ButtonReady_Click;
+            // 
+            // AccuarcyLabel
+            // 
+            AccuarcyLabel.Anchor = AnchorStyles.None;
+            AccuarcyLabel.AutoSize = true;
+            AccuarcyLabel.Font = new Font("Consolas", 10.2F, FontStyle.Italic, GraphicsUnit.Point, 204);
+            AccuarcyLabel.ForeColor = SystemColors.WindowText;
+            AccuarcyLabel.Location = new Point(342, 20);
+            AccuarcyLabel.MaximumSize = new Size(825, 0);
+            AccuarcyLabel.Name = "AccuarcyLabel";
+            AccuarcyLabel.Size = new Size(90, 20);
+            AccuarcyLabel.TabIndex = 4;
+            AccuarcyLabel.Text = "Accuracy:";
+            // 
+            // SpeedLabel
+            // 
+            SpeedLabel.Anchor = AnchorStyles.None;
+            SpeedLabel.AutoSize = true;
+            SpeedLabel.Font = new Font("Consolas", 10.2F, FontStyle.Italic, GraphicsUnit.Point, 204);
+            SpeedLabel.ForeColor = SystemColors.WindowText;
+            SpeedLabel.Location = new Point(110, 20);
+            SpeedLabel.MaximumSize = new Size(825, 0);
+            SpeedLabel.Name = "SpeedLabel";
+            SpeedLabel.Size = new Size(63, 20);
+            SpeedLabel.TabIndex = 5;
+            SpeedLabel.Text = "Speed:";
+            // 
+            // TotalWordsLabel
+            // 
+            TotalWordsLabel.Anchor = AnchorStyles.None;
+            TotalWordsLabel.AutoSize = true;
+            TotalWordsLabel.Font = new Font("Consolas", 10.2F, FontStyle.Italic, GraphicsUnit.Point, 204);
+            TotalWordsLabel.ForeColor = SystemColors.WindowText;
+            TotalWordsLabel.Location = new Point(594, 20);
+            TotalWordsLabel.MaximumSize = new Size(825, 0);
+            TotalWordsLabel.Name = "TotalWordsLabel";
+            TotalWordsLabel.Size = new Size(117, 20);
+            TotalWordsLabel.TabIndex = 8;
+            TotalWordsLabel.Text = "Total words:";
+            // 
+            // MetricsLabel
+            // 
+            MetricsLabel.Anchor = AnchorStyles.None;
+            MetricsLabel.AutoSize = true;
+            MetricsLabel.Font = new Font("Consolas", 10.2F, FontStyle.Italic, GraphicsUnit.Point, 204);
+            MetricsLabel.ForeColor = SystemColors.WindowText;
+            MetricsLabel.Location = new Point(32, 20);
+            MetricsLabel.MaximumSize = new Size(825, 0);
+            MetricsLabel.Name = "MetricsLabel";
+            MetricsLabel.Size = new Size(72, 20);
+            MetricsLabel.TabIndex = 9;
+            MetricsLabel.Text = "Metrics";
+            // 
+            // TTSPrompt
+            // 
+            TTSPrompt.Anchor = AnchorStyles.None;
+            TTSPrompt.AutoSize = true;
+            TTSPrompt.Font = new Font("Consolas", 10.2F, FontStyle.Italic, GraphicsUnit.Point, 204);
+            TTSPrompt.ForeColor = SystemColors.WindowText;
+            TTSPrompt.Location = new Point(166, 20);
+            TTSPrompt.MaximumSize = new Size(825, 0);
+            TTSPrompt.Name = "TTSPrompt";
+            TTSPrompt.Size = new Size(27, 20);
+            TTSPrompt.TabIndex = 10;
+            TTSPrompt.Text = "ss";
+            // 
+            // CASPrompt
+            // 
+            CASPrompt.Anchor = AnchorStyles.None;
+            CASPrompt.AutoSize = true;
+            CASPrompt.Font = new Font("Consolas", 10.2F, FontStyle.Italic, GraphicsUnit.Point, 204);
+            CASPrompt.ForeColor = SystemColors.WindowText;
+            CASPrompt.Location = new Point(425, 20);
+            CASPrompt.MaximumSize = new Size(825, 0);
+            CASPrompt.Name = "CASPrompt";
+            CASPrompt.Size = new Size(27, 20);
+            CASPrompt.TabIndex = 11;
+            CASPrompt.Text = "ss";
+            // 
+            // TotalWordsPrompt
+            // 
+            TotalWordsPrompt.Anchor = AnchorStyles.None;
+            TotalWordsPrompt.AutoSize = true;
+            TotalWordsPrompt.Font = new Font("Consolas", 10.2F, FontStyle.Italic, GraphicsUnit.Point, 204);
+            TotalWordsPrompt.ForeColor = SystemColors.WindowText;
+            TotalWordsPrompt.Location = new Point(707, 20);
+            TotalWordsPrompt.MaximumSize = new Size(825, 0);
+            TotalWordsPrompt.Name = "TotalWordsPrompt";
+            TotalWordsPrompt.Size = new Size(27, 20);
+            TotalWordsPrompt.TabIndex = 12;
+            TotalWordsPrompt.Text = "ss";
+            // 
+            // CurrentKeyLabel
+            // 
+            CurrentKeyLabel.Anchor = AnchorStyles.None;
+            CurrentKeyLabel.AutoSize = true;
+            CurrentKeyLabel.Font = new Font("Consolas", 10.2F, FontStyle.Italic, GraphicsUnit.Point, 204);
+            CurrentKeyLabel.ForeColor = SystemColors.WindowText;
+            CurrentKeyLabel.Location = new Point(56, 56);
+            CurrentKeyLabel.MaximumSize = new Size(825, 0);
+            CurrentKeyLabel.Name = "CurrentKeyLabel";
+            CurrentKeyLabel.Size = new Size(117, 20);
+            CurrentKeyLabel.TabIndex = 13;
+            CurrentKeyLabel.Text = "Current key:";
+            // 
+            // BestTypingSpeedLabel
+            // 
+            BestTypingSpeedLabel.Anchor = AnchorStyles.None;
+            BestTypingSpeedLabel.AutoSize = true;
+            BestTypingSpeedLabel.Font = new Font("Consolas", 10.2F, FontStyle.Italic, GraphicsUnit.Point, 204);
+            BestTypingSpeedLabel.ForeColor = SystemColors.WindowText;
+            BestTypingSpeedLabel.Location = new Point(244, 56);
+            BestTypingSpeedLabel.MaximumSize = new Size(825, 0);
+            BestTypingSpeedLabel.Name = "BestTypingSpeedLabel";
+            BestTypingSpeedLabel.Size = new Size(171, 20);
+            BestTypingSpeedLabel.TabIndex = 14;
+            BestTypingSpeedLabel.Text = "Best typing speed:";
+            // 
+            // CurrentKeyPrompt
+            // 
+            CurrentKeyPrompt.Anchor = AnchorStyles.None;
+            CurrentKeyPrompt.AutoSize = true;
+            CurrentKeyPrompt.Font = new Font("Consolas", 10.2F, FontStyle.Italic, GraphicsUnit.Point, 204);
+            CurrentKeyPrompt.ForeColor = SystemColors.WindowText;
+            CurrentKeyPrompt.Location = new Point(166, 56);
+            CurrentKeyPrompt.MaximumSize = new Size(825, 0);
+            CurrentKeyPrompt.Name = "CurrentKeyPrompt";
+            CurrentKeyPrompt.Size = new Size(27, 20);
+            CurrentKeyPrompt.TabIndex = 15;
+            CurrentKeyPrompt.Text = "ss";
+            // 
+            // BestTypingSpeedPrompt
+            // 
+            BestTypingSpeedPrompt.Anchor = AnchorStyles.None;
+            BestTypingSpeedPrompt.AutoSize = true;
+            BestTypingSpeedPrompt.Font = new Font("Consolas", 10.2F, FontStyle.Italic, GraphicsUnit.Point, 204);
+            BestTypingSpeedPrompt.ForeColor = SystemColors.WindowText;
+            BestTypingSpeedPrompt.Location = new Point(422, 56);
+            BestTypingSpeedPrompt.MaximumSize = new Size(825, 0);
+            BestTypingSpeedPrompt.Name = "BestTypingSpeedPrompt";
+            BestTypingSpeedPrompt.Size = new Size(27, 20);
+            BestTypingSpeedPrompt.TabIndex = 16;
+            BestTypingSpeedPrompt.Text = "ss";
             // 
             // Form1
             // 
@@ -765,6 +934,18 @@
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.Linen;
             ClientSize = new Size(926, 484);
+            Controls.Add(BestTypingSpeedPrompt);
+            Controls.Add(CurrentKeyPrompt);
+            Controls.Add(BestTypingSpeedLabel);
+            Controls.Add(CurrentKeyLabel);
+            Controls.Add(TotalWordsPrompt);
+            Controls.Add(CASPrompt);
+            Controls.Add(TTSPrompt);
+            Controls.Add(MetricsLabel);
+            Controls.Add(TotalWordsLabel);
+            Controls.Add(SpeedLabel);
+            Controls.Add(AccuarcyLabel);
+            Controls.Add(ButtonReady);
             Controls.Add(shownTextArea);
             Controls.Add(textInputArea);
             Controls.Add(btnMinus);
@@ -832,7 +1013,7 @@
             MinimumSize = new Size(880, 495);
             Name = "Form1";
             StartPosition = FormStartPosition.CenterScreen;
-            Text = "Typing Tutor pre-alpha 0.2.0";
+            Text = "Typing Tutor pre-alpha 0.4.0";
             Activated += Form1_Activated;
             SizeChanged += Form1_SizeChanged;
             Paint += Form1_Paint;
@@ -882,5 +1063,18 @@
         private Button btnMinus, btnPlus, btnLBracket, btnRBracket, btnBackSlash, btnColon, btnDoubleQuotes, btnTilda, btnLArrow, btnRArrow, btnQMark;
         private TextBox textInputArea;
         private Label shownTextArea;
+        private Button ButtonReady;
+        private Label AccuarcyLabel;
+        private Label SpeedLabel;
+        private Label testWAS;
+        private Label TotalWordsLabel;
+        private Label MetricsLabel;
+        private Label TTSPrompt;
+        private Label CASPrompt;
+        private Label TotalWordsPrompt;
+        private Label CurrentKeyLabel;
+        private Label BestTypingSpeedLabel;
+        private Label CurrentKeyPrompt;
+        private Label BestTypingSpeedPrompt;
     }
 }
