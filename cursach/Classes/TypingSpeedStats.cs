@@ -30,7 +30,8 @@ namespace Classes
 
         public override void CalculateStat(uint NumberOfCorrectEnteredWords)
         {
-            TypingSpeed = (float)NumberOfCorrectEnteredWords / (stopwatch.ElapsedTicks / 10000000.0f) * SecondsInAMinute;
+            TypingSpeed = (float)Math.Truncate(((float)NumberOfCorrectEnteredWords / (stopwatch.ElapsedTicks / 10000000.0f) * SecondsInAMinute) * 10.0f) / 10.0f;
+            stopwatch.Reset();
         }
 
         public float GetTypingSpeed()
