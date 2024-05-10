@@ -4,6 +4,7 @@ using static System.Windows.Forms.AxHost;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Rebar;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace TypingTutor
 {
@@ -12,12 +13,13 @@ namespace TypingTutor
         const int buttonWidth = 55, buttonHeight = 45;
         const int keyboardLayoutXPos = 51, keyboardLayoutYPos = 229;
         //
-        public uint NumberOfCorrectEnteredWords;
-        public uint NumberOfCorrectEnteredChars;
-        public TextInserter textInserter;
-        public TextValidator textValidator;
-        public CharacterAccuracyStats CAS;
-        public WordAccuracyStats WAS;
+        private uint NumberOfEnteredWords;
+        private uint NumberOfCorrectEnteredChars;
+        private uint NumberOfWrongEnteredChars;
+        private TextInserter textInserter;
+        private TextValidator textValidator;
+        private CharacterAccuracyStats CAS;
+        private WordAccuracyStats WAS;
         static TypingSpeedStats TSS = new TypingSpeedStats();
         //
         [DllImport("user32.dll")]
@@ -28,8 +30,9 @@ namespace TypingTutor
             textValidator = new TextValidator(shownTextArea.Text);
             CAS = new CharacterAccuracyStats();
             WAS = new WordAccuracyStats();
-            NumberOfCorrectEnteredWords = 0;
+            NumberOfEnteredWords = 0;
             NumberOfCorrectEnteredChars = 0;
+            NumberOfWrongEnteredChars = 0;
             /* Works fine
             textInserter = new TextInserter("..\\..\\..\\..\\texts\\txttxt.txt");
             shownTextArea.Text = textInserter.ParsedText[0];
@@ -39,10 +42,9 @@ namespace TypingTutor
         private Point DrawKeysRow(Button[] buttons, int row, Point pos)
         {
             int col;
-            Font font1 = new Font("Consolas", 9f);
+            System.Drawing.Font font1 = new System.Drawing.Font("Consolas", 9f);
             for (col = 0; col < buttons.Length; col++)
             {
-                //buttons[col].TabIndex = col + (row * buttons.Length) + 1; idk
                 buttons[col].Font = font1;
                 buttons[col].BackColor = System.Drawing.SystemColors.ControlLight;
                 buttons[col].Size = new System.Drawing.Size(buttonWidth, buttonHeight);
@@ -53,7 +55,7 @@ namespace TypingTutor
         }
         private Point DrawKey(Button button, int extendSizeX, Point pos)
         {
-            Font font1 = new Font("Consolas", 9f);
+            System.Drawing.Font font1 = new System.Drawing.Font("Consolas", 9f);
             button.Font = font1;
             button.BackColor = System.Drawing.SystemColors.ControlLight;
             button.Size = new System.Drawing.Size(buttonWidth + extendSizeX, buttonHeight);
@@ -118,7 +120,7 @@ namespace TypingTutor
             Pen lineColor = new Pen(Color.FromArgb(30, 60, 90), 4);
             int pointStartX = (this.ClientSize.Width - 825) / 2;
             int pointEndX = this.ClientSize.Width - pointStartX;
-            int pointY = (this.ClientSize.Height - 225) / 2;
+            int pointY = (this.ClientSize.Height - 125) / 2;
             Point pointStart = new Point(pointStartX, pointY);
             Point pointEnd = new Point(pointEndX, pointY);
             e.Graphics.DrawLine(lineColor, pointStart, pointEnd);
@@ -128,7 +130,7 @@ namespace TypingTutor
         {
             int pointStartX = (this.ClientSize.Width - 825) / 2;
             int pointEndX = this.ClientSize.Width - pointStartX * 2;
-            int pointY = (this.ClientSize.Height - 290) / 2;
+            int pointY = (this.ClientSize.Height - 190) / 2;
             Point pointStart = new Point(pointStartX, pointY);
             textInputArea.Location = pointStart;
             textInputArea.Size = new Size(pointEndX, 1);    // height is automatically set
@@ -137,8 +139,7 @@ namespace TypingTutor
         private void DrawShownTextArea()
         {
             int pointStartX = (this.ClientSize.Width - 825) / 2;
-            // int pointEndX = this.ClientSize.Width - pointStartX * 2;
-            int pointY = (this.ClientSize.Height - 215) / 2;
+            int pointY = (this.ClientSize.Height - 115) / 2;
             Point pointStart = new Point(pointStartX, pointY);
             shownTextArea.Location = pointStart;
         }
@@ -148,7 +149,6 @@ namespace TypingTutor
             DrawKeyBoardLayout();
             DrawTextInputArea();
             DrawShownTextArea();
-
         }
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
@@ -163,6 +163,7 @@ namespace TypingTutor
         {
             ButtonReady.Enabled = false;
             ButtonReady.Visible = false;
+            textInputArea.Enabled = true;
             textInputArea.Focus();
             TSS.StartMonitoringSpeed();
         }
@@ -176,49 +177,61 @@ namespace TypingTutor
         // Need to add some logic to distinguish wether the string ends woth new line
         private void textInputArea_TextChanged(object sender, EventArgs e)
         {
-            bool SubstringPassed;
-            char CurrentChar;
             string CurrentString = textInputArea.Text;
-            int CurrentCharPosInString;
+            bool StringPassed;
+
+            StringPassed = textValidator.ValidateString(CurrentString);
+            if (StringPassed)
+            {
+                TSS.StopMonitoringSpeed();
+                TSS.CalculateStat(NumberOfCorrectEnteredChars);
+                TTSPrompt.Text = TSS.GetTypingSpeed().ToString();
+                CAS.CalculateStat(NumberOfCorrectEnteredChars);
+                CASPrompt.Text = CAS.GetUnitAccuracy().ToString();
+                int index = 0;
+
+                // skip whitespace until first word
+                while (index < CurrentString.Length && char.IsWhiteSpace(CurrentString[index]))
+                    index++;
+
+                while (index < CurrentString.Length)
+                {
+                    // check if current char is part of a word
+                    while (index < CurrentString.Length && !char.IsWhiteSpace(CurrentString[index]))
+                        index++;
+
+                    NumberOfEnteredWords++;
+
+                    // skip whitespace until next word
+                    while (index < CurrentString.Length && char.IsWhiteSpace(CurrentString[index]))
+                        index++;
+                }
+                TotalWordsPrompt.Text = NumberOfEnteredWords.ToString();
+                shownTextArea.Text = textInserter.InsertNextLine();
+                TSS.StartMonitoringSpeed();
+                return;
+            }
+
+            bool SubstringPassed;
 
             if (CurrentString.Length > 0)
             {
-                CurrentCharPosInString = CurrentString.Length - 1;
-                CurrentChar = CurrentString[CurrentCharPosInString];
-
                 SubstringPassed = textValidator.ValidateSubString(CurrentString, 0);    // current substring starts from 0 index
                 if (SubstringPassed)
                 {
-                    TSS.StopMonitoringSpeed();
                     NumberOfCorrectEnteredChars++;
-                    if (CurrentChar == ' ')
-                    {
-                        NumberOfCorrectEnteredWords++;
-                        testWordsCounter.Text = NumberOfCorrectEnteredWords.ToString();
-                    }
                     textInputArea.BackColor = Color.Linen;
-                    TSS.CalculateStat(NumberOfCorrectEnteredChars);
-                    testTSS.Text = TSS.GetTypingSpeed().ToString();
-                    TSS.StartMonitoringSpeed();
                 }
-                else
+                else 
                 {
-                    TSS.StopMonitoringSpeed();
+                    CAS.SetWrongTypedUnits(++NumberOfWrongEnteredChars);
                     textInputArea.BackColor = Color.Yellow;
-                    TSS.CalculateStat(NumberOfCorrectEnteredChars);
-                    testTSS.Text = TSS.GetTypingSpeed().ToString();
-                    TSS.StartMonitoringSpeed();
                 }
-            }
-            else
-            {
-                TSS.StopMonitoringSpeed();
-            }
+            } 
         }
 
         private void textInputArea_KeyDown(object sender, KeyEventArgs e)
         {
-            // textInputArea.Text = textInserter.ParsedText;
             // Check key state for Ctrl, Shift and Alt
             bool leftCtrlPressed = (GetKeyState(Keys.LControlKey) & 0x8000) != 0;
             bool rightCtrlPressed = (GetKeyState(Keys.RControlKey) & 0x8000) != 0;
@@ -228,17 +241,35 @@ namespace TypingTutor
             bool rightAltPressed = (GetKeyState(Keys.RMenu) & 0x8000) != 0; // RMenu is right Alt
 
             if (leftCtrlPressed)
+            {
                 btnLCtrl.BackColor = Color.FromArgb(209, 207, 207); // Color for left Ctrl
+                return;
+            }
             if (rightCtrlPressed)
+            {
                 btnRCtrl.BackColor = Color.FromArgb(209, 207, 207); // Color for right Ctrl
+                return;
+            }
             if (leftShiftPressed)
+            {
                 btnLShift.BackColor = Color.FromArgb(209, 207, 207); // Color for left Shift
+                return;
+            }
             if (rightShiftPressed)
+            {
                 btnRShift.BackColor = Color.FromArgb(209, 207, 207); // Color for right Shift
+                return;
+            }
             if (leftAltPressed)
+            {
                 btnLAlt.BackColor = Color.FromArgb(209, 207, 207); // Color for left Alt
+                return;
+            }
             if (rightAltPressed)
+            {
                 btnRAlt.BackColor = Color.FromArgb(209, 207, 207); // Color for right Alt
+                return;
+            }
 
             switch (e.KeyCode)
             {
