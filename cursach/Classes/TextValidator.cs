@@ -19,7 +19,7 @@ namespace Classes
 
         public bool ValidateChar(char inputChar, int charPosInString)
         {
-            if (inputChar == ReferenceString[charPosInString])
+            if (ReferenceString[charPosInString] == inputChar)
             { return  true; }
             return false;
         }
@@ -33,7 +33,7 @@ namespace Classes
 
         public bool ValidateString(string inputString)
         {
-            if (inputString == ReferenceString)
+            if (ReferenceString == inputString)
             { return true; }
             return false;
         }
