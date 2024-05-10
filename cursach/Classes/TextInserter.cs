@@ -61,12 +61,12 @@ namespace Classes
             return System.IO.File.ReadAllLines(PathToFile);
         }
 
-        public string InsertLine(uint StringLength) // Getting the length from user
+        public string InsertNextLine(uint StringLength) // Getting the length from user
         {
             throw new NotImplementedException();
         }
 
-        public string InsertLine() // Standard Client String Length by default
+        public string InsertNextLine() // Standard Client String Length by default
         {
             throw new NotImplementedException();
         }
