@@ -9,20 +9,20 @@ namespace Classes
     public class CharacterAccuracyStats : Stats
     {
         protected float UnitAccuracy;
-        protected uint WrongTypedUnits;
+        protected int WrongTypedUnits;
 
         public CharacterAccuracyStats() : base(" % char accuracy") { WrongTypedUnits = 0; }
 
         protected CharacterAccuracyStats(string ValName) : base(ValName) { }
 
-        public virtual void SetWrongTypedUnits(uint wrongTypedUnits)
+        public virtual void SetWrongTypedUnits(int wrongTypedUnits)
         {
             WrongTypedUnits = wrongTypedUnits;
         }
 
         public virtual float GetUnitAccuracy() { return UnitAccuracy; }
 
-        public override void CalculateStat(uint CorrectTypedChars)
+        public override void CalculateStat(int CorrectTypedChars)
         {
             if (WrongTypedUnits == 0) { UnitAccuracy = 100.0f; return; }
             UnitAccuracy = (float)(Math.Truncate((100.0f - ((float)WrongTypedUnits / CorrectTypedChars * 100.0f)) * 100.0f) / 100.0f);
