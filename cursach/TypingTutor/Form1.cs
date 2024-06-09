@@ -14,8 +14,9 @@ namespace TypingTutor
         const int keyboardLayoutXPos = 51, keyboardLayoutYPos = 229;
         //
         private uint NumberOfEnteredWords;
-        private uint NumberOfCorrectEnteredChars;
-        private uint NumberOfWrongEnteredChars;
+        private int NumberOfCorrectEnteredChars;
+        private int NumberOfCharsInCurrString;
+        private int NumberOfWrongEnteredChars;
         private TextInserter textInserter;
         private TextValidator textValidator;
         private CharacterAccuracyStats CAS;
@@ -27,17 +28,16 @@ namespace TypingTutor
         public Form1()
         {
             InitializeComponent();
-            textValidator = new TextValidator(shownTextArea.Text);
             CAS = new CharacterAccuracyStats();
             WAS = new WordAccuracyStats();
             NumberOfEnteredWords = 0;
             NumberOfCorrectEnteredChars = 0;
             NumberOfWrongEnteredChars = 0;
-            /* Works fine
-            textInserter = new TextInserter("..\\..\\..\\..\\texts\\txttxt.txt");
-            shownTextArea.Text = textInserter.ParsedText[0];
-            */
 
+            textInserter = new TextInserter("..\\..\\..\\..\\texts\\txttxt.txt");
+            shownTextArea.Text = textInserter.InsertNextLine();
+            textValidator = new TextValidator(shownTextArea.Text);
+            textInputArea.MaxLength = shownTextArea.Text.Length;
         }
         private Point DrawKeysRow(Button[] buttons, int row, Point pos)
         {
@@ -174,7 +174,6 @@ namespace TypingTutor
 
         }
 
-        // Need to add some logic to distinguish wether the string ends woth new line
         private void textInputArea_TextChanged(object sender, EventArgs e)
         {
             string CurrentString = textInputArea.Text;
@@ -184,12 +183,13 @@ namespace TypingTutor
             if (StringPassed)
             {
                 TSS.StopMonitoringSpeed();
-                TSS.CalculateStat(NumberOfCorrectEnteredChars);
+                TSS.CalculateStat(CurrentString.Length);
                 TTSPrompt.Text = TSS.GetTypingSpeed().ToString();
                 CAS.CalculateStat(NumberOfCorrectEnteredChars);
                 CASPrompt.Text = CAS.GetUnitAccuracy().ToString();
                 int index = 0;
 
+                // refactor
                 // skip whitespace until first word
                 while (index < CurrentString.Length && char.IsWhiteSpace(CurrentString[index]))
                     index++;
@@ -207,7 +207,11 @@ namespace TypingTutor
                         index++;
                 }
                 TotalWordsPrompt.Text = NumberOfEnteredWords.ToString();
+                // refactor
+                textInputArea.Text = string.Empty;
                 shownTextArea.Text = textInserter.InsertNextLine();
+                textValidator.SetReferenceString(shownTextArea.Text);
+                textInputArea.MaxLength = shownTextArea.Text.Length;
                 TSS.StartMonitoringSpeed();
                 return;
             }
