@@ -28,7 +28,7 @@ namespace Classes
             stopwatch.Stop();
         }
 
-        public override void CalculateStat(uint NumberOfCorrectEnteredWords)
+        public override void CalculateStat(int NumberOfCorrectEnteredWords)
         {
             TypingSpeed = (float)Math.Truncate(((float)NumberOfCorrectEnteredWords / (stopwatch.ElapsedTicks / 10000000.0f) * SecondsInAMinute) * 10.0f) / 10.0f;
             stopwatch.Reset();

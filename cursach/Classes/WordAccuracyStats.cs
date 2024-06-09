@@ -11,14 +11,14 @@ namespace Classes
 
         public WordAccuracyStats() : base(" % words accuracy") { }
 
-        public override void SetWrongTypedUnits(uint wrongTypedUnits)
+        public override void SetWrongTypedUnits(int wrongTypedUnits)
         {
             WrongTypedUnits = wrongTypedUnits;
         }
 
         public override float GetUnitAccuracy() { return UnitAccuracy; }
 
-        public override void CalculateStat(uint CorrectTypedChars)
+        public override void CalculateStat(int CorrectTypedChars)
         {
             if (WrongTypedUnits == 0) { UnitAccuracy = 100.0f; return; }
             UnitAccuracy = (float)(Math.Truncate((100.0f - ((float)WrongTypedUnits / CorrectTypedChars * 100.0f)) * 100.0f) / 100.0f);
