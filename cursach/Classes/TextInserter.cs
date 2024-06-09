@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using System.Reflection.Emit;
 using System.Reflection.PortableExecutable;
 using System.Text;
 using static System.Net.Mime.MediaTypeNames;
@@ -7,14 +8,13 @@ namespace Classes
 {
     public class TextInserter
     {
-        public string[] ParsedText { get; set; }
-        public string Buffer;
-        public string TextToInsert;
-        public string ErrorMsg;
-        public uint StringLength;
-        const uint StandardClientStringLength = 75;
+        private string[] ParsedText;
+        private string Buffer;
+        private string TextToInsert;
+        const int StandardClientStringLength = 75;
+        static int CurrentStartPos = 0;
 
-        public TextInserter(string PathToFile, uint StringLength)
+        public TextInserter(string PathToFile, int ShuffleMode)
         {
             if (!File.Exists(PathToFile)) { throw new FileNotFoundException("Can't find file"); }
             else 
@@ -27,37 +27,84 @@ namespace Classes
                 else if (UTF8_Encoding != GetEncoding(PathToFile))
                 { throw new EncoderFallbackException("Unable to copy text from a file with non-UTF8 encoding"); }
                 
-                else if (StringLength == 0)
-                { throw new TextInsertionException("Can't insert text with zero-StringLength"); }
-                
-                ParsedText = ParseTextFromFile(PathToFile);
+                ParseTextFromFile(PathToFile, ShuffleMode);
             }
         }
 
-        public TextInserter(string PathToFile) : this(PathToFile, StandardClientStringLength)
-        { }
-        
-        /*
-        public string ConvertStringArrayToString ()
-        {
-            return string.Join("\n", ParsedText);
-        }
-        */
+        public TextInserter(string PathToFile): this(PathToFile, 0) { }
 
-        private string[] ParseTextFromFile (string PathToFile)
+        private void ParseTextFromFile (string PathToFile, int ShuffleMode)
         {
-            return System.IO.File.ReadAllLines(PathToFile);
-        }
-
-        public string InsertNextLine(uint StringLength) // Getting the length from user
-        {
-            throw new NotImplementedException();
+            try { ParsedText = System.IO.File.ReadAllLines(PathToFile); }
+            catch (Exception e) {
+                Console.WriteLine("{0}: The copy operation could not be performed", e.GetType().Name);
+            }
+            if (ShuffleMode == 0) { ; }
+            else if (ShuffleMode == 1) { ShuffleParsedTextBySentences(); }
+            else { throw new ArgumentException("Invalid option for shuffling the text"); }
+            Buffer = string.Join(" ", ParsedText);
         }
 
-        public string InsertNextLine() // Standard Client String Length by default
+        private void ShuffleParsedTextBySentences ()
         {
-            throw new NotImplementedException();
+            Random random = new Random();
+            for (int i = 0; i < ParsedText.Length - 1; ++i)
+            {
+                int r = random.Next(i, ParsedText.Length);
+                (ParsedText[r], ParsedText[i]) = (ParsedText[i], ParsedText[r]);
+            }
         }
+
+        private bool IsValidSeparator(string str, int pos)
+        {
+            if (pos >= str.Length || pos < 0) return false;
+
+            return str[pos] == ' ' ||
+                   str[pos] == ',' ||
+                   str[pos] == '.' ||
+                   str[pos] == '!' ||
+                   str[pos] == '?';
+        }
+
+        public string InsertNextLine()
+        {
+            int CurrentEndPos = CurrentStartPos + StandardClientStringLength - 1;
+
+            if (CurrentEndPos >= Buffer.Length)
+            {
+                CurrentEndPos = Buffer.Length - 1;
+            }
+
+            if (IsValidSeparator(Buffer, CurrentEndPos))
+            {
+                TextToInsert = Buffer.Substring(CurrentStartPos, CurrentEndPos - CurrentStartPos + 1);
+                CurrentStartPos = CurrentEndPos + 1;
+            }
+            else
+            {
+                bool separatorFound = false;
+
+                for (int i = CurrentEndPos; i > CurrentStartPos; --i)
+                {
+                    if (IsValidSeparator(Buffer, i))
+                    {
+                        TextToInsert = Buffer.Substring(CurrentStartPos, i - CurrentStartPos + 1);
+                        CurrentStartPos = i + 1;
+                        separatorFound = true;
+                        break;
+                    }
+                }
+
+                if (!separatorFound)
+                {
+                    TextToInsert = Buffer.Substring(CurrentStartPos, CurrentEndPos - CurrentStartPos + 1);
+                    CurrentStartPos = CurrentEndPos + 1;
+                }
+            }
+
+            return TextToInsert;
+        }
+
 
         private static Encoding GetEncoding(string filename)
         {
