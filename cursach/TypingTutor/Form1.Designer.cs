@@ -751,7 +751,7 @@
             textInputArea.ForeColor = SystemColors.GrayText;
             textInputArea.Location = new Point(258, 213);
             textInputArea.MaximumSize = new Size(825, 0);
-            textInputArea.MaxLength = 65000;
+            textInputArea.MaxLength = 75;
             textInputArea.Name = "textInputArea";
             textInputArea.Size = new Size(416, 24);
             textInputArea.TabIndex = 1;
