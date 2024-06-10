@@ -17,6 +17,7 @@ namespace TypingTutor
         private int NumberOfCorrectEnteredChars;
         private int NumberOfCharsInCurrString;
         private int NumberOfWrongEnteredChars;
+        private bool CorrectCharFlag;
         private TextInserter textInserter;
         private TextValidator textValidator;
         private CharacterAccuracyStats CAS;
@@ -225,11 +226,17 @@ namespace TypingTutor
                 {
                     NumberOfCorrectEnteredChars++;
                     textInputArea.BackColor = Color.Linen;
+                    CorrectCharFlag = true;
                 }
                 else 
                 {
                     CAS.SetWrongTypedUnits(++NumberOfWrongEnteredChars);
+                    if (CorrectCharFlag)
+                    {
+                        CAS.SetWrongTypedUnits(++NumberOfWrongEnteredChars);
+                    }
                     textInputArea.BackColor = Color.Yellow;
+                    CorrectCharFlag = false;
                 }
             } 
         }
