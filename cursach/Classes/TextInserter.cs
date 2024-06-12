@@ -33,6 +33,11 @@ namespace Classes
 
         public TextInserter(string PathToFile): this(PathToFile, 0) { }
 
+        public string GetCurrentLine()
+        {
+            return TextToInsert;
+        }
+
         private void ParseTextFromFile (string PathToFile, int ShuffleMode)
         {
             try { ParsedText = System.IO.File.ReadAllLines(PathToFile); }
