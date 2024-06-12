@@ -13,10 +13,12 @@ namespace TypingTutor
         const int buttonWidth = 55, buttonHeight = 45;
         const int keyboardLayoutXPos = 51, keyboardLayoutYPos = 229;
         //
+        private string CurrentInputString;
+        private string CurrentReferenceString;
         private uint NumberOfEnteredWords;
         private int NumberOfCorrectEnteredChars;
-        private int NumberOfCharsInCurrString;
         private int NumberOfWrongEnteredChars;
+        private bool LShiftPressed;
         private bool CorrectCharFlag;
         private TextInserter textInserter;
         private TextValidator textValidator;
@@ -24,6 +26,9 @@ namespace TypingTutor
         private WordAccuracyStats WAS;
         static TypingSpeedStats TSS = new TypingSpeedStats();
         //
+        /////
+        ///     Do not import this dll and GetKeyState LATER
+        /////
         [DllImport("user32.dll")]
         public static extern short GetKeyState(Keys key);
         public Form1()
@@ -34,9 +39,12 @@ namespace TypingTutor
             NumberOfEnteredWords = 0;
             NumberOfCorrectEnteredChars = 0;
             NumberOfWrongEnteredChars = 0;
+            CorrectCharFlag = true;
 
             textInserter = new TextInserter("..\\..\\..\\..\\texts\\txttxt.txt");
             shownTextArea.Text = textInserter.InsertNextLine();
+            CurrentReferenceString = textInserter.GetCurrentLine();
+
             textValidator = new TextValidator(shownTextArea.Text);
             textInputArea.MaxLength = shownTextArea.Text.Length;
         }
@@ -175,42 +183,191 @@ namespace TypingTutor
 
         }
 
+        private void KeyHighlight()
+        {
+            if (!CorrectCharFlag) { btnBackspace.BackColor = Color.FromArgb(209, 207, 207); return; }
+            char KeyToHighlight;
+            if (CurrentInputString.Length <= textInputArea.MaxLength ) { KeyToHighlight = CurrentReferenceString[CurrentInputString.Length]; }
+            else { return; }
+            
+            bool IsLetter = char.IsLetter(KeyToHighlight);
+            bool IsDigit = char.IsDigit(KeyToHighlight);
+            bool IsUpperCase = char.IsUpper(KeyToHighlight);
+            bool IsWhiteSpace = char.IsWhiteSpace(KeyToHighlight);
+
+            if (IsLetter && !IsUpperCase)
+            {
+                if (LShiftPressed) { LShiftPressed = false; }
+                switch (KeyToHighlight)
+                {
+                    case 'q': btnQ.BackColor = Color.FromArgb(209, 207, 207); break;
+                    case 'w': btnW.BackColor = Color.FromArgb(209, 207, 207); break;
+                    case 'e': btnE.BackColor = Color.FromArgb(209, 207, 207); break;
+                    case 'r': btnR.BackColor = Color.FromArgb(209, 207, 207); break;
+                    case 't': btnT.BackColor = Color.FromArgb(209, 207, 207); break;
+                    case 'y': btnY.BackColor = Color.FromArgb(209, 207, 207); break;
+                    case 'u': btnU.BackColor = Color.FromArgb(209, 207, 207); break;
+                    case 'i': btnI.BackColor = Color.FromArgb(209, 207, 207); break;
+                    case 'o': btnO.BackColor = Color.FromArgb(209, 207, 207); break;
+                    case 'p': btnP.BackColor = Color.FromArgb(209, 207, 207); break;
+                    case 'a': btnA.BackColor = Color.FromArgb(209, 207, 207); break;
+                    case 's': btnS.BackColor = Color.FromArgb(209, 207, 207); break;
+                    case 'd': btnD.BackColor = Color.FromArgb(209, 207, 207); break;
+                    case 'f': btnF.BackColor = Color.FromArgb(209, 207, 207); break;
+                    case 'g': btnG.BackColor = Color.FromArgb(209, 207, 207); break;
+                    case 'h': btnH.BackColor = Color.FromArgb(209, 207, 207); break;
+                    case 'j': btnJ.BackColor = Color.FromArgb(209, 207, 207); break;
+                    case 'k': btnK.BackColor = Color.FromArgb(209, 207, 207); break;
+                    case 'l': btnL.BackColor = Color.FromArgb(209, 207, 207); break;
+                    case 'z': btnZ.BackColor = Color.FromArgb(209, 207, 207); break;
+                    case 'x': btnX.BackColor = Color.FromArgb(209, 207, 207); break;
+                    case 'c': btnC.BackColor = Color.FromArgb(209, 207, 207); break;
+                    case 'v': btnV.BackColor = Color.FromArgb(209, 207, 207); break;
+                    case 'b': btnB.BackColor = Color.FromArgb(209, 207, 207); break;
+                    case 'n': btnN.BackColor = Color.FromArgb(209, 207, 207); break;
+                    case 'm': btnM.BackColor = Color.FromArgb(209, 207, 207); break;
+                }
+            }
+            else if (IsLetter && IsUpperCase)
+            {
+                btnLShift.BackColor = Color.FromArgb(209, 207, 207);
+                switch (KeyToHighlight)
+                {
+                    case 'Q': btnQ.BackColor = Color.FromArgb(209, 207, 207); break;
+                    case 'W': btnW.BackColor = Color.FromArgb(209, 207, 207); break;
+                    case 'E': btnE.BackColor = Color.FromArgb(209, 207, 207); break;
+                    case 'R': btnR.BackColor = Color.FromArgb(209, 207, 207); break;
+                    case 'T': btnT.BackColor = Color.FromArgb(209, 207, 207); break;
+                    case 'Y': btnY.BackColor = Color.FromArgb(209, 207, 207); break;
+                    case 'U': btnU.BackColor = Color.FromArgb(209, 207, 207); break;
+                    case 'I': btnI.BackColor = Color.FromArgb(209, 207, 207); break;
+                    case 'O': btnO.BackColor = Color.FromArgb(209, 207, 207); break;
+                    case 'P': btnP.BackColor = Color.FromArgb(209, 207, 207); break;
+                    case 'A': btnA.BackColor = Color.FromArgb(209, 207, 207); break;
+                    case 'S': btnS.BackColor = Color.FromArgb(209, 207, 207); break;
+                    case 'D': btnD.BackColor = Color.FromArgb(209, 207, 207); break;
+                    case 'F': btnF.BackColor = Color.FromArgb(209, 207, 207); break;
+                    case 'G': btnG.BackColor = Color.FromArgb(209, 207, 207); break;
+                    case 'H': btnH.BackColor = Color.FromArgb(209, 207, 207); break;
+                    case 'J': btnJ.BackColor = Color.FromArgb(209, 207, 207); break;
+                    case 'K': btnK.BackColor = Color.FromArgb(209, 207, 207); break;
+                    case 'L': btnL.BackColor = Color.FromArgb(209, 207, 207); break;
+                    case 'Z': btnZ.BackColor = Color.FromArgb(209, 207, 207); break;
+                    case 'X': btnX.BackColor = Color.FromArgb(209, 207, 207); break;
+                    case 'C': btnC.BackColor = Color.FromArgb(209, 207, 207); break;
+                    case 'V': btnV.BackColor = Color.FromArgb(209, 207, 207); break;
+                    case 'B': btnB.BackColor = Color.FromArgb(209, 207, 207); break;
+                    case 'N': btnN.BackColor = Color.FromArgb(209, 207, 207); break;
+                    case 'M': btnM.BackColor = Color.FromArgb(209, 207, 207); break;
+                }
+            }
+            else if (IsDigit)
+            {
+                switch (KeyToHighlight)
+                {
+                    case '0': btn0.BackColor = Color.FromArgb(209, 207, 207); break;
+                    case '1': btn1.BackColor = Color.FromArgb(209, 207, 207); break;
+                    case '2': btn2.BackColor = Color.FromArgb(209, 207, 207); break;
+                    case '3': btn3.BackColor = Color.FromArgb(209, 207, 207); break;
+                    case '4': btn4.BackColor = Color.FromArgb(209, 207, 207); break;
+                    case '5': btn5.BackColor = Color.FromArgb(209, 207, 207); break;
+                    case '6': btn6.BackColor = Color.FromArgb(209, 207, 207); break;
+                    case '7': btn7.BackColor = Color.FromArgb(209, 207, 207); break;
+                    case '8': btn8.BackColor = Color.FromArgb(209, 207, 207); break;
+                    case '9': btn9.BackColor = Color.FromArgb(209, 207, 207); break;
+                }
+            }
+            else if (IsWhiteSpace)
+            {
+                btnSpace.BackColor = Color.FromArgb(209, 207, 207);
+            }
+            else
+            {
+                switch (KeyToHighlight)
+                {
+                    case '`': btnTilda.BackColor = Color.FromArgb(209, 207, 207); break;
+                    case '-': btnMinus.BackColor = Color.FromArgb(209, 207, 207); break;
+                    case '=': btnPlus.BackColor = Color.FromArgb(209, 207, 207); break;
+                    case '[': btnLBracket.BackColor = Color.FromArgb(209, 207, 207); break;
+                    case ']': btnRBracket.BackColor = Color.FromArgb(209, 207, 207); break;
+                    case ';': btnColon.BackColor = Color.FromArgb(209, 207, 207); break;
+                    case '\'': btnDoubleQuotes.BackColor = Color.FromArgb(209, 207, 207); break;
+                    case '\\': btnBackSlash.BackColor = Color.FromArgb(209, 207, 207); break;
+                    case ',': btnLArrow.BackColor = Color.FromArgb(209, 207, 207); break;
+                    case '.': btnRArrow.BackColor = Color.FromArgb(209, 207, 207); break;
+                    case '/': btnQMark.BackColor = Color.FromArgb(209, 207, 207); break;
+                        /////
+                        ///     How to know when LShift should be colored back?
+                        ////
+                    case '~': btnLShift.BackColor = Color.FromArgb(209, 207, 207); btnTilda.BackColor = Color.FromArgb(209, 207, 207); LShiftPressed = true; break;
+                    case '!': btnLShift.BackColor = Color.FromArgb(209, 207, 207); btn1.BackColor = Color.FromArgb(209, 207, 207); LShiftPressed = true; break;
+                    case '@': btnLShift.BackColor = Color.FromArgb(209, 207, 207); btn2.BackColor = Color.FromArgb(209, 207, 207); LShiftPressed = true; break;
+                    case '#': btnLShift.BackColor = Color.FromArgb(209, 207, 207); btn3.BackColor = Color.FromArgb(209, 207, 207); LShiftPressed = true; break;
+                    case '$': btnLShift.BackColor = Color.FromArgb(209, 207, 207); btn4.BackColor = Color.FromArgb(209, 207, 207); LShiftPressed = true; break;
+                    case '%': btnLShift.BackColor = Color.FromArgb(209, 207, 207); btn5.BackColor = Color.FromArgb(209, 207, 207); LShiftPressed = true; break;
+                    case '^': btnLShift.BackColor = Color.FromArgb(209, 207, 207); btn6.BackColor = Color.FromArgb(209, 207, 207); LShiftPressed = true; break;
+                    case '&': btnLShift.BackColor = Color.FromArgb(209, 207, 207); btn7.BackColor = Color.FromArgb(209, 207, 207); LShiftPressed = true; break;
+                    case '*': btnLShift.BackColor = Color.FromArgb(209, 207, 207); btn8.BackColor = Color.FromArgb(209, 207, 207); LShiftPressed = true; break;
+                    case '(': btnLShift.BackColor = Color.FromArgb(209, 207, 207); btn9.BackColor = Color.FromArgb(209, 207, 207); LShiftPressed = true; break;
+                    case ')': btnLShift.BackColor = Color.FromArgb(209, 207, 207); btn0.BackColor = Color.FromArgb(209, 207, 207); LShiftPressed = true; break;
+                    case '_': btnLShift.BackColor = Color.FromArgb(209, 207, 207); btnMinus.BackColor = Color.FromArgb(209, 207, 207); LShiftPressed = true; break;
+                    case '+': btnLShift.BackColor = Color.FromArgb(209, 207, 207); btnPlus.BackColor = Color.FromArgb(209, 207, 207); LShiftPressed = true; break;
+                    case '{': btnLShift.BackColor = Color.FromArgb(209, 207, 207); btnLBracket.BackColor = Color.FromArgb(209, 207, 207); LShiftPressed = true; break;
+                    case '}': btnLShift.BackColor = Color.FromArgb(209, 207, 207); btnRBracket.BackColor = Color.FromArgb(209, 207, 207); LShiftPressed = true; break;
+                    case ':': btnLShift.BackColor = Color.FromArgb(209, 207, 207); btnColon.BackColor = Color.FromArgb(209, 207, 207); LShiftPressed = true; break;
+                    case '"': btnLShift.BackColor = Color.FromArgb(209, 207, 207); btnDoubleQuotes.BackColor = Color.FromArgb(209, 207, 207); LShiftPressed = true; break;
+                    case '|': btnLShift.BackColor = Color.FromArgb(209, 207, 207); btnBackSlash.BackColor = Color.FromArgb(209, 207, 207); LShiftPressed = true; break;
+                    case '<': btnLShift.BackColor = Color.FromArgb(209, 207, 207); btnLArrow.BackColor = Color.FromArgb(209, 207, 207); LShiftPressed = true; break;
+                    case '>': btnLShift.BackColor = Color.FromArgb(209, 207, 207); btnRArrow.BackColor = Color.FromArgb(209, 207, 207); LShiftPressed = true; break;
+                    case '?': btnLShift.BackColor = Color.FromArgb(209, 207, 207); btnQMark.BackColor = Color.FromArgb(209, 207, 207); LShiftPressed = true; break;
+                }
+            }
+        }
+
         private void textInputArea_TextChanged(object sender, EventArgs e)
         {
-            string CurrentString = textInputArea.Text;
+            CurrentInputString = textInputArea.Text;
+
+            /////
+            ///    Must know when to call. After substring check???? 
+            /////
+            KeyHighlight();
+
             bool StringPassed;
 
-            StringPassed = textValidator.ValidateString(CurrentString);
+            StringPassed = textValidator.ValidateString(CurrentInputString);
             if (StringPassed)
             {
                 TSS.StopMonitoringSpeed();
-                TSS.CalculateStat(CurrentString.Length);
+                TSS.CalculateStat(CurrentInputString.Length);
                 TTSPrompt.Text = TSS.GetTypingSpeed().ToString();
                 CAS.CalculateStat(NumberOfCorrectEnteredChars);
                 CASPrompt.Text = CAS.GetUnitAccuracy().ToString();
-                int index = 0;
 
                 // refactor
+                int index = 0;
+
                 // skip whitespace until first word
-                while (index < CurrentString.Length && char.IsWhiteSpace(CurrentString[index]))
+                while (index < CurrentInputString.Length && char.IsWhiteSpace(CurrentInputString[index]))
                     index++;
 
-                while (index < CurrentString.Length)
+                while (index < CurrentInputString.Length)
                 {
                     // check if current char is part of a word
-                    while (index < CurrentString.Length && !char.IsWhiteSpace(CurrentString[index]))
+                    while (index < CurrentInputString.Length && !char.IsWhiteSpace(CurrentInputString[index]))
                         index++;
 
                     NumberOfEnteredWords++;
 
                     // skip whitespace until next word
-                    while (index < CurrentString.Length && char.IsWhiteSpace(CurrentString[index]))
+                    while (index < CurrentInputString.Length && char.IsWhiteSpace(CurrentInputString[index]))
                         index++;
                 }
                 TotalWordsPrompt.Text = NumberOfEnteredWords.ToString();
                 // refactor
                 textInputArea.Text = string.Empty;
                 shownTextArea.Text = textInserter.InsertNextLine();
+                CurrentReferenceString = textInserter.GetCurrentLine();
                 textValidator.SetReferenceString(shownTextArea.Text);
                 textInputArea.MaxLength = shownTextArea.Text.Length;
                 TSS.StartMonitoringSpeed();
@@ -219,9 +376,9 @@ namespace TypingTutor
 
             bool SubstringPassed;
 
-            if (CurrentString.Length > 0)
+            if (CurrentInputString.Length > 0)
             {
-                SubstringPassed = textValidator.ValidateSubString(CurrentString, 0);    // current substring starts from 0 index
+                SubstringPassed = textValidator.ValidateSubString(CurrentInputString, 0);    // current substring starts from 0 index
                 if (SubstringPassed)
                 {
                     NumberOfCorrectEnteredChars++;
@@ -241,8 +398,12 @@ namespace TypingTutor
             } 
         }
 
+        /////
+        ///     Delete this property LATER
+        /////
         private void textInputArea_KeyDown(object sender, KeyEventArgs e)
         {
+            /*
             // Check key state for Ctrl, Shift and Alt
             bool leftCtrlPressed = (GetKeyState(Keys.LControlKey) & 0x8000) != 0;
             bool rightCtrlPressed = (GetKeyState(Keys.RControlKey) & 0x8000) != 0;
@@ -343,10 +504,16 @@ namespace TypingTutor
                 case Keys.OemPeriod: btnRArrow.BackColor = Color.FromArgb(209, 207, 207); break; // period (right arrow)
                 case Keys.OemQuestion: btnQMark.BackColor = Color.FromArgb(209, 207, 207); break; // question mark
             }
+            */
         }
 
         private void textInputArea_KeyUp(object sender, KeyEventArgs e)
         {
+            /////
+            ///     Delete this piece of shit LATER
+            /////
+
+            /*
             // Check key state for Ctrl, Shift and Alt
             bool leftCtrlPressed = (GetKeyState(Keys.LControlKey) & 0x8000) == 0;
             bool rightCtrlPressed = (GetKeyState(Keys.RControlKey) & 0x8000) == 0;
@@ -367,6 +534,7 @@ namespace TypingTutor
                 btnLAlt.BackColor = System.Drawing.SystemColors.ControlLight; // Color for left Alt
             if (rightAltPressed)
                 btnRAlt.BackColor = System.Drawing.SystemColors.ControlLight; // Color for right Alt
+            */
 
             switch (e.KeyCode)
             {
