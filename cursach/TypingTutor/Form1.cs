@@ -215,6 +215,7 @@ namespace TypingTutor
             btnLShift.BackColor = System.Drawing.SystemColors.ControlLight;
             btnRShift.BackColor = System.Drawing.SystemColors.ControlLight;
             btnRArrow.BackColor =  System.Drawing.SystemColors.ControlLight;
+            btnTilda.BackColor = System.Drawing.SystemColors.ControlLight;
             btnMinus.BackColor =  System.Drawing.SystemColors.ControlLight;  
             btnPlus.BackColor =  System.Drawing.SystemColors.ControlLight;  
             btnLBracket.BackColor = System.Drawing.SystemColors.ControlLight;  
@@ -224,9 +225,18 @@ namespace TypingTutor
             btnBackSlash.BackColor = System.Drawing.SystemColors.ControlLight;  
             btnLArrow.BackColor = System.Drawing.SystemColors.ControlLight;  
             btnRArrow.BackColor = System.Drawing.SystemColors.ControlLight;  
-            btnQMark.BackColor = System.Drawing.SystemColors.ControlLight;  
-
-            }
+            btnQMark.BackColor = System.Drawing.SystemColors.ControlLight;
+            btn0.BackColor = System.Drawing.SystemColors.ControlLight;
+            btn1.BackColor = System.Drawing.SystemColors.ControlLight;
+            btn2.BackColor = System.Drawing.SystemColors.ControlLight;
+            btn3.BackColor = System.Drawing.SystemColors.ControlLight;
+            btn4.BackColor = System.Drawing.SystemColors.ControlLight;
+            btn5.BackColor = System.Drawing.SystemColors.ControlLight;
+            btn6.BackColor = System.Drawing.SystemColors.ControlLight;
+            btn7.BackColor = System.Drawing.SystemColors.ControlLight;
+            btn8.BackColor = System.Drawing.SystemColors.ControlLight;
+            btn9.BackColor = System.Drawing.SystemColors.ControlLight;
+        }
         private void KeyHighlight()
         {
             List<char> charForRshift = new List<char> { 'q', 'w', 'r', 't', 'a', 's', 'd', 'f', 'g', 'z', 'x', 'c', 'v', 'b' };
@@ -294,7 +304,6 @@ namespace TypingTutor
                     case 'b': btnB.BackColor = Color.FromArgb(255, 255, 153); break;
                     case 'n': btnN.BackColor = Color.FromArgb(255, 255, 153); break;
                     case 'm': btnM.BackColor = Color.FromArgb(255, 255, 153); break;
-                    case ' ': btnSpace.BackColor = Color.FromArgb(255, 255, 153); break;
                     case '0': btn0.BackColor = Color.FromArgb(255, 255, 153); break;
                     case '1': btn1.BackColor = Color.FromArgb(255, 255, 153); break;
                     case '2': btn2.BackColor = Color.FromArgb(255, 255, 153); break;
@@ -313,6 +322,7 @@ namespace TypingTutor
             {
                 switch (KeyToHighlight)
                 {
+                    case ' ': btnSpace.BackColor = Color.FromArgb(255, 255, 153); break;
                     case '`': btnTilda.BackColor = Color.FromArgb(255, 255, 153); break;
                     case '-': btnMinus.BackColor = Color.FromArgb(255, 255, 153); break;
                     case '=': btnPlus.BackColor = Color.FromArgb(255, 255, 153); break;
