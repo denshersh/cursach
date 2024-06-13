@@ -13,7 +13,7 @@ namespace TypingTutor
     {
         const int buttonWidth = 55, buttonHeight = 45;
         const int keyboardLayoutXPos = 51, keyboardLayoutYPos = 229;
-        //
+        
         private string CurrentInputString;
         private string CurrentReferenceString;
         private uint NumberOfEnteredWords;
@@ -39,7 +39,7 @@ namespace TypingTutor
             NumberOfWrongEnteredChars = 0;
             CorrectCharFlag = true;
 
-            textInserter = new TextInserter("..\\..\\..\\..\\texts\\txttxt.txt");
+            textInserter = new TextInserter("..\\..\\..\\..\\texts\\txttxt.txt", 1);
             CurrentReferenceString = textInserter.InsertNextLine();
             shownTextArea.Text = textInserter.GetCurrentLine();
             
@@ -214,7 +214,19 @@ namespace TypingTutor
             btnSpace.BackColor = System.Drawing.SystemColors.ControlLight;
             btnLShift.BackColor = System.Drawing.SystemColors.ControlLight;
             btnRShift.BackColor = System.Drawing.SystemColors.ControlLight;
-        }
+            btnRArrow.BackColor =  System.Drawing.SystemColors.ControlLight;
+            btnMinus.BackColor =  System.Drawing.SystemColors.ControlLight;  
+            btnPlus.BackColor =  System.Drawing.SystemColors.ControlLight;  
+            btnLBracket.BackColor = System.Drawing.SystemColors.ControlLight;  
+            btnRBracket.BackColor = System.Drawing.SystemColors.ControlLight;  
+            btnColon.BackColor = System.Drawing.SystemColors.ControlLight;  
+            btnDoubleQuotes.BackColor = System.Drawing.SystemColors.ControlLight;  
+            btnBackSlash.BackColor = System.Drawing.SystemColors.ControlLight;  
+            btnLArrow.BackColor = System.Drawing.SystemColors.ControlLight;  
+            btnRArrow.BackColor = System.Drawing.SystemColors.ControlLight;  
+            btnQMark.BackColor = System.Drawing.SystemColors.ControlLight;  
+
+            }
         private void KeyHighlight()
         {
             List<char> charForRshift = new List<char> { 'q', 'w', 'r', 't', 'a', 's', 'd', 'f', 'g', 'z', 'x', 'c', 'v', 'b' };
@@ -237,6 +249,8 @@ namespace TypingTutor
             else { return; }
             
             bool IsUpperCase = char.IsUpper(KeyToHighlight);
+            bool IsLetter = char.IsLetter(KeyToHighlight);
+            bool IsDigit = char.IsDigit(KeyToHighlight);
             KeyToHighlight = char.ToLower(KeyToHighlight);
             if (IsUpperCase)
             {
@@ -250,7 +264,7 @@ namespace TypingTutor
                 }
                 
             }
-            if (true)
+            if (IsLetter || IsDigit)
             {
                 switch (KeyToHighlight)
                 {
@@ -310,15 +324,12 @@ namespace TypingTutor
                     case ',': btnLArrow.BackColor = Color.FromArgb(255, 255, 153); break;
                     case '.': btnRArrow.BackColor = Color.FromArgb(255, 255, 153); break;
                     case '/': btnQMark.BackColor = Color.FromArgb(255, 255, 153); break;
-                        /////
-                        ///     How to know when LShift should be colored back?
-                        ////
-                    case '~': btnLShift.BackColor = Color.FromArgb(255, 255, 153); btnTilda.BackColor = Color.FromArgb(255, 255, 153);   break;
-                    case '!': btnLShift.BackColor = Color.FromArgb(255, 255, 153); btn1.BackColor = Color.FromArgb(255, 255, 153);   break;
-                    case '@': btnLShift.BackColor = Color.FromArgb(255, 255, 153); btn2.BackColor = Color.FromArgb(255, 255, 153);   break;
-                    case '#': btnLShift.BackColor = Color.FromArgb(255, 255, 153); btn3.BackColor = Color.FromArgb(255, 255, 153);   break;
-                    case '$': btnLShift.BackColor = Color.FromArgb(255, 255, 153); btn4.BackColor = Color.FromArgb(255, 255, 153);   break;
-                    case '%': btnLShift.BackColor = Color.FromArgb(255, 255, 153); btn5.BackColor = Color.FromArgb(255, 255, 153);   break;
+                    case '~': btnRShift.BackColor = Color.FromArgb(255, 255, 153); btnTilda.BackColor = Color.FromArgb(255, 255, 153);   break;
+                    case '!': btnRShift.BackColor = Color.FromArgb(255, 255, 153); btn1.BackColor = Color.FromArgb(255, 255, 153);   break;
+                    case '@': btnRShift.BackColor = Color.FromArgb(255, 255, 153); btn2.BackColor = Color.FromArgb(255, 255, 153);   break;
+                    case '#': btnRShift.BackColor = Color.FromArgb(255, 255, 153); btn3.BackColor = Color.FromArgb(255, 255, 153);   break;
+                    case '$': btnRShift.BackColor = Color.FromArgb(255, 255, 153); btn4.BackColor = Color.FromArgb(255, 255, 153);   break;
+                    case '%': btnRShift.BackColor = Color.FromArgb(255, 255, 153); btn5.BackColor = Color.FromArgb(255, 255, 153);   break;
                     case '^': btnLShift.BackColor = Color.FromArgb(255, 255, 153); btn6.BackColor = Color.FromArgb(255, 255, 153);   break;
                     case '&': btnLShift.BackColor = Color.FromArgb(255, 255, 153); btn7.BackColor = Color.FromArgb(255, 255, 153);   break;
                     case '*': btnLShift.BackColor = Color.FromArgb(255, 255, 153); btn8.BackColor = Color.FromArgb(255, 255, 153);   break;
@@ -415,194 +426,12 @@ namespace TypingTutor
         /////
         private void textInputArea_KeyDown(object sender, KeyEventArgs e)
         {
-            /*
-            // Check key state for Ctrl, Shift and Alt
-            bool leftCtrlPressed = (GetKeyState(Keys.LControlKey) & 0x8000) != 0;
-            bool rightCtrlPressed = (GetKeyState(Keys.RControlKey) & 0x8000) != 0;
-            bool leftShiftPressed = (GetKeyState(Keys.LShiftKey) & 0x8000) != 0;
-            bool rightShiftPressed = (GetKeyState(Keys.RShiftKey) & 0x8000) != 0;
-            bool leftAltPressed = (GetKeyState(Keys.LMenu) & 0x8000) != 0; // LMenu is left Alt
-            bool rightAltPressed = (GetKeyState(Keys.RMenu) & 0x8000) != 0; // RMenu is right Alt
-
-            if (leftCtrlPressed)
-            {
-                btnLCtrl.BackColor = Color.FromArgb(255, 255, 153); // Color for left Ctrl
-                return;
-            }
-            if (rightCtrlPressed)
-            {
-                btnRCtrl.BackColor = Color.FromArgb(255, 255, 153); // Color for right Ctrl
-                return;
-            }
-            if (leftShiftPressed)
-            {
-                btnLShift.BackColor = Color.FromArgb(255, 255, 153); // Color for left Shift
-                return;
-            }
-            if (rightShiftPressed)
-            {
-                btnRShift.BackColor = Color.FromArgb(255, 255, 153); // Color for right Shift
-                return;
-            }
-            if (leftAltPressed)
-            {
-                btnLAlt.BackColor = Color.FromArgb(255, 255, 153); // Color for left Alt
-                return;
-            }
-            if (rightAltPressed)
-            {
-                btnRAlt.BackColor = Color.FromArgb(255, 255, 153); // Color for right Alt
-                return;
-            }
-
-            switch (e.KeyCode)
-            {
-                case Keys.Q: btnQ.BackColor = Color.FromArgb(255, 255, 153); break;
-                case Keys.W: btnW.BackColor = Color.FromArgb(255, 255, 153); break;
-                case Keys.E: btnE.BackColor = Color.FromArgb(255, 255, 153); break;
-                case Keys.R: btnR.BackColor = Color.FromArgb(255, 255, 153); break;
-                case Keys.T: btnT.BackColor = Color.FromArgb(255, 255, 153); break;
-                case Keys.Y: btnY.BackColor = Color.FromArgb(255, 255, 153); break;
-                case Keys.U: btnU.BackColor = Color.FromArgb(255, 255, 153); break;
-                case Keys.I: btnI.BackColor = Color.FromArgb(255, 255, 153); break;
-                case Keys.O: btnO.BackColor = Color.FromArgb(255, 255, 153); break;
-                case Keys.P: btnP.BackColor = Color.FromArgb(255, 255, 153); break;
-                case Keys.A: btnA.BackColor = Color.FromArgb(255, 255, 153); break;
-                case Keys.S: btnS.BackColor = Color.FromArgb(255, 255, 153); break;
-                case Keys.D: btnD.BackColor = Color.FromArgb(255, 255, 153); break;
-                case Keys.F: btnF.BackColor = Color.FromArgb(255, 255, 153); break;
-                case Keys.G: btnG.BackColor = Color.FromArgb(255, 255, 153); break;
-                case Keys.H: btnH.BackColor = Color.FromArgb(255, 255, 153); break;
-                case Keys.J: btnJ.BackColor = Color.FromArgb(255, 255, 153); break;
-                case Keys.K: btnK.BackColor = Color.FromArgb(255, 255, 153); break;
-                case Keys.L: btnL.BackColor = Color.FromArgb(255, 255, 153); break;
-                case Keys.Z: btnZ.BackColor = Color.FromArgb(255, 255, 153); break;
-                case Keys.X: btnX.BackColor = Color.FromArgb(255, 255, 153); break;
-                case Keys.C: btnC.BackColor = Color.FromArgb(255, 255, 153); break;
-                case Keys.V: btnV.BackColor = Color.FromArgb(255, 255, 153); break;
-                case Keys.B: btnB.BackColor = Color.FromArgb(255, 255, 153); break;
-                case Keys.N: btnN.BackColor = Color.FromArgb(255, 255, 153); break;
-                case Keys.M: btnM.BackColor = Color.FromArgb(255, 255, 153); break;
-                case Keys.D0: btn0.BackColor = Color.FromArgb(255, 255, 153); break;
-                case Keys.D1: btn1.BackColor = Color.FromArgb(255, 255, 153); break;
-                case Keys.D2: btn2.BackColor = Color.FromArgb(255, 255, 153); break;
-                case Keys.D3: btn3.BackColor = Color.FromArgb(255, 255, 153); break;
-                case Keys.D4: btn4.BackColor = Color.FromArgb(255, 255, 153); break;
-                case Keys.D5: btn5.BackColor = Color.FromArgb(255, 255, 153); break;
-                case Keys.D6: btn6.BackColor = Color.FromArgb(255, 255, 153); break;
-                case Keys.D7: btn7.BackColor = Color.FromArgb(255, 255, 153); break;
-                case Keys.D8: btn8.BackColor = Color.FromArgb(255, 255, 153); break;
-                case Keys.D9: btn9.BackColor = Color.FromArgb(255, 255, 153); break;
-                case Keys.Space: btnSpace.BackColor = Color.FromArgb(255, 255, 153); break;
-                case Keys.CapsLock:
-                    {
-                        if (Control.IsKeyLocked(Keys.CapsLock))
-                            btnCapsLock.BackColor = Color.FromArgb(255, 255, 153);
-                        else
-                            btnCapsLock.BackColor = System.Drawing.SystemColors.ControlLight; break;
-                    }
-                case Keys.Back: btnBackspace.BackColor = Color.FromArgb(255, 255, 153); break;
-                case Keys.Tab: btnTab.BackColor = Color.FromArgb(255, 255, 153); break;
-                case Keys.Enter: btnEnter.BackColor = Color.FromArgb(255, 255, 153); break;
-                case Keys.OemMinus: btnMinus.BackColor = Color.FromArgb(255, 255, 153); break; // minus
-                case Keys.Oemplus: btnPlus.BackColor = Color.FromArgb(255, 255, 153); break; // plus
-                case Keys.OemOpenBrackets: btnLBracket.BackColor = Color.FromArgb(255, 255, 153); break; // left square bracket
-                case Keys.OemCloseBrackets: btnRBracket.BackColor = Color.FromArgb(255, 255, 153); break; // right square bracket
-                case Keys.OemPipe: btnBackSlash.BackColor = Color.FromArgb(255, 255, 153); break; // back slash
-                case Keys.OemSemicolon: btnColon.BackColor = Color.FromArgb(255, 255, 153); break; // colon
-                case Keys.OemQuotes: btnDoubleQuotes.BackColor = Color.FromArgb(255, 255, 153); break; // double qoutes
-                case Keys.Oemtilde: btnTilda.BackColor = Color.FromArgb(255, 255, 153); break; // tilda
-                case Keys.Oemcomma: btnLArrow.BackColor = Color.FromArgb(255, 255, 153); break; // comma (left arrow)
-                case Keys.OemPeriod: btnRArrow.BackColor = Color.FromArgb(255, 255, 153); break; // period (right arrow)
-                case Keys.OemQuestion: btnQMark.BackColor = Color.FromArgb(255, 255, 153); break; // question mark
-            }
-            */
+            
         }
 
         private void textInputArea_KeyUp(object sender, KeyEventArgs e)
         {
-            /////
-            ///     Delete this piece of shit LATER
-            /////
-
-            /*
-            // Check key state for Ctrl, Shift and Alt
-            bool leftCtrlPressed = (GetKeyState(Keys.LControlKey) & 0x8000) == 0;
-            bool rightCtrlPressed = (GetKeyState(Keys.RControlKey) & 0x8000) == 0;
-            bool leftShiftPressed = (GetKeyState(Keys.LShiftKey) & 0x8000) == 0;
-            bool rightShiftPressed = (GetKeyState(Keys.RShiftKey) & 0x8000) == 0;
-            bool leftAltPressed = (GetKeyState(Keys.LMenu) & 0x8000) == 0; // LMenu is left Alt
-            bool rightAltPressed = (GetKeyState(Keys.RMenu) & 0x8000) == 0; // RMenu is right Alt
-
-            if (leftCtrlPressed)
-                btnLCtrl.BackColor = System.Drawing.SystemColors.ControlLight; // Color for left Ctrl
-            if (rightCtrlPressed)
-                btnRCtrl.BackColor = System.Drawing.SystemColors.ControlLight; // Color for right Ctrl
-            if (leftShiftPressed)
-                btnLShift.BackColor = System.Drawing.SystemColors.ControlLight; // Color for left Shift
-            if (rightShiftPressed)
-                btnRShift.BackColor = System.Drawing.SystemColors.ControlLight; // Color for right Shift
-            if (leftAltPressed)
-                btnLAlt.BackColor = System.Drawing.SystemColors.ControlLight; // Color for left Alt
-            if (rightAltPressed)
-                btnRAlt.BackColor = System.Drawing.SystemColors.ControlLight; // Color for right Alt
-            */
-            /*
-            switch (e.KeyCode)
-            {
-                case Keys.Q: btnQ.BackColor = System.Drawing.SystemColors.ControlLight; break;
-                case Keys.W: btnW.BackColor = System.Drawing.SystemColors.ControlLight; break;
-                case Keys.E: btnE.BackColor = System.Drawing.SystemColors.ControlLight; break;
-                case Keys.R: btnR.BackColor = System.Drawing.SystemColors.ControlLight; break;
-                case Keys.T: btnT.BackColor = System.Drawing.SystemColors.ControlLight; break;
-                case Keys.Y: btnY.BackColor = System.Drawing.SystemColors.ControlLight; break;
-                case Keys.U: btnU.BackColor = System.Drawing.SystemColors.ControlLight; break;
-                case Keys.I: btnI.BackColor = System.Drawing.SystemColors.ControlLight; break;
-                case Keys.O: btnO.BackColor = System.Drawing.SystemColors.ControlLight; break;
-                case Keys.P: btnP.BackColor = System.Drawing.SystemColors.ControlLight; break;
-                case Keys.A: btnA.BackColor = System.Drawing.SystemColors.ControlLight; break;
-                case Keys.S: btnS.BackColor = System.Drawing.SystemColors.ControlLight; break;
-                case Keys.D: btnD.BackColor = System.Drawing.SystemColors.ControlLight; break;
-                case Keys.F: btnF.BackColor = System.Drawing.SystemColors.ControlLight; break;
-                case Keys.G: btnG.BackColor = System.Drawing.SystemColors.ControlLight; break;
-                case Keys.H: btnH.BackColor = System.Drawing.SystemColors.ControlLight; break;
-                case Keys.J: btnJ.BackColor = System.Drawing.SystemColors.ControlLight; break;
-                case Keys.K: btnK.BackColor = System.Drawing.SystemColors.ControlLight; break;
-                case Keys.L: btnL.BackColor = System.Drawing.SystemColors.ControlLight; break;
-                case Keys.Z: btnZ.BackColor = System.Drawing.SystemColors.ControlLight; break;
-                case Keys.X: btnX.BackColor = System.Drawing.SystemColors.ControlLight; break;
-                case Keys.C: btnC.BackColor = System.Drawing.SystemColors.ControlLight; break;
-                case Keys.V: btnV.BackColor = System.Drawing.SystemColors.ControlLight; break;
-                case Keys.B: btnB.BackColor = System.Drawing.SystemColors.ControlLight; break;
-                case Keys.N: btnN.BackColor = System.Drawing.SystemColors.ControlLight; break;
-                case Keys.M: btnM.BackColor = System.Drawing.SystemColors.ControlLight; break;
-                case Keys.D0: btn0.BackColor = System.Drawing.SystemColors.ControlLight; break;
-                case Keys.D1: btn1.BackColor = System.Drawing.SystemColors.ControlLight; break;
-                case Keys.D2: btn2.BackColor = System.Drawing.SystemColors.ControlLight; break;
-                case Keys.D3: btn3.BackColor = System.Drawing.SystemColors.ControlLight; break;
-                case Keys.D4: btn4.BackColor = System.Drawing.SystemColors.ControlLight; break;
-                case Keys.D5: btn5.BackColor = System.Drawing.SystemColors.ControlLight; break;
-                case Keys.D6: btn6.BackColor = System.Drawing.SystemColors.ControlLight; break;
-                case Keys.D7: btn7.BackColor = System.Drawing.SystemColors.ControlLight; break;
-                case Keys.D8: btn8.BackColor = System.Drawing.SystemColors.ControlLight; break;
-                case Keys.D9: btn9.BackColor = System.Drawing.SystemColors.ControlLight; break;
-                case Keys.Space: btnSpace.BackColor = System.Drawing.SystemColors.ControlLight; break;
-                //case Keys.CapsLock: btnCapsLock.BackColor = System.Drawing.SystemColors.ControlLight; break;
-                //case Keys.Back: btnBackspace.BackColor = System.Drawing.SystemColors.ControlLight; break;
-                case Keys.Tab: btnTab.BackColor = System.Drawing.SystemColors.ControlLight; break;
-                case Keys.Enter: btnEnter.BackColor = System.Drawing.SystemColors.ControlLight; break;
-                case Keys.OemMinus: btnMinus.BackColor = System.Drawing.SystemColors.ControlLight; break; // minus
-                case Keys.Oemplus: btnPlus.BackColor = System.Drawing.SystemColors.ControlLight; break; // plus
-                case Keys.OemOpenBrackets: btnLBracket.BackColor = System.Drawing.SystemColors.ControlLight; break; // left square bracket
-                case Keys.OemCloseBrackets: btnRBracket.BackColor = System.Drawing.SystemColors.ControlLight; break; // right square bracket
-                case Keys.OemPipe: btnBackSlash.BackColor = System.Drawing.SystemColors.ControlLight; break; // back slash
-                case Keys.OemSemicolon: btnColon.BackColor = System.Drawing.SystemColors.ControlLight; break; // colon
-                case Keys.OemQuotes: btnDoubleQuotes.BackColor = System.Drawing.SystemColors.ControlLight; break; // double quotes
-                case Keys.Oemtilde: btnTilda.BackColor = System.Drawing.SystemColors.ControlLight; break; // tilda
-                case Keys.Oemcomma: btnLArrow.BackColor = System.Drawing.SystemColors.ControlLight; break; // comma (left arrow)
-                case Keys.OemPeriod: btnRArrow.BackColor = System.Drawing.SystemColors.ControlLight; break; // period (right arrow)
-                case Keys.OemQuestion: btnQMark.BackColor = System.Drawing.SystemColors.ControlLight; break; // question mark
-            } */
+           
         }
     }
 }
