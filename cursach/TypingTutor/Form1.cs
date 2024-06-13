@@ -22,20 +22,12 @@ namespace TypingTutor
         private TextInserter textInserter;
         private TextValidator textValidator;
         private CharacterAccuracyStats CAS;
-        private WordAccuracyStats WAS;
         static TypingSpeedStats TSS = new TypingSpeedStats();
-        //
-        /////
-        ///     Do not import this dll and GetKeyState LATER
-        /////
-        [DllImport("user32.dll")]
-        public static extern short GetKeyState(Keys key);
 
         public Form1()
         {
             InitializeComponent();
             CAS = new CharacterAccuracyStats();
-            WAS = new WordAccuracyStats();
             NumberOfEnteredWords = 0;
             NumberOfWrongEnteredChars = 0;
             CorrectCharFlag = true;
@@ -142,7 +134,6 @@ namespace TypingTutor
             int pointY = (this.ClientSize.Height - 190) / 2;
             Point pointStart = new Point(pointStartX, pointY);
             textInputArea.Location = pointStart;
-            textInputArea.Size = new Size(pointEndX, 1);    // height is automatically set
             textInputArea.Size = new Size(pointEndX, 1);
         }
 
@@ -183,13 +174,6 @@ namespace TypingTutor
             TSS.StartMonitoringSpeed();
         }
 
-        // Unnecessary (maybe)
-        private void textInputArea_Enter(object sender, EventArgs e)
-        {
-
-        }
-
-        private void ClearAllHighlight()
         private void ButtonBackColorPaintBack()
         {
             btnQ.BackColor = System.Drawing.SystemColors.ControlLight;
@@ -250,7 +234,6 @@ namespace TypingTutor
         private void KeyHighlight()
         {
             List<char> charForRshift = new List<char> { 'q', 'w', 'r', 't', 'a', 's', 'd', 'f', 'g', 'z', 'x', 'c', 'v', 'b' };
-            ClearAllHighlight();
             ButtonBackColorPaintBack();
 
             bool SubstringPassed;
@@ -265,7 +248,6 @@ namespace TypingTutor
                 btnBackspace.BackColor = Color.Yellow;
                 return;
             }
-
 
             char KeyToHighlight;
 
@@ -331,8 +313,6 @@ namespace TypingTutor
                     case '9': btn9.BackColor = Color.FromArgb(255, 255, 153); break;
                 }
             }
-            
-            
             else
             {
                 switch (KeyToHighlight)
@@ -374,19 +354,14 @@ namespace TypingTutor
             }
         }
 
-        private void textInputArea_TextChanged(object sender, EventArgs e)
         private void CountWords()
         {
-            CurrentInputString = textInputArea.Text;
             int index = 0;
 
             // skip whitespace until first word
             while (index < CurrentInputString.Length && char.IsWhiteSpace(CurrentInputString[index]))
                 index++;
 
-            /////
-            ///    Must know when to call. After substring check???? 
-            /////
             while (index < CurrentInputString.Length)
             {
                 // check if current char is part of a word
@@ -409,40 +384,17 @@ namespace TypingTutor
             bool StringPassed;
 
             StringPassed = textValidator.ValidateString(CurrentInputString);
-            // ==============================================================
             if (StringPassed)
             {
                 TSS.StopMonitoringSpeed();
 
                 TSS.CalculateStat(CurrentInputString.Length);
-                TTSPrompt.Text = TSS.GetTypingSpeed().ToString();
                 TTSPrompt.Text = TSS.GetTypingSpeed().ToString() + TSS.StatUnitName;
                 CAS.CalculateStat(shownTextArea.Text.Length);
-                CASPrompt.Text = CAS.GetUnitAccuracy().ToString();
-
-                // refactor
-                int index = 0;
-
-                // skip whitespace until first word
-                while (index < CurrentInputString.Length && char.IsWhiteSpace(CurrentInputString[index]))
-                    index++;
-
-                while (index < CurrentInputString.Length)
-                {
-                    // check if current char is part of a word
-                    while (index < CurrentInputString.Length && !char.IsWhiteSpace(CurrentInputString[index]))
-                        index++;
                 CASPrompt.Text = CAS.GetUnitAccuracy().ToString() + CAS.StatUnitName;
 
-                    NumberOfEnteredWords++;
                 CountWords();
 
-                    // skip whitespace until next word
-                    while (index < CurrentInputString.Length && char.IsWhiteSpace(CurrentInputString[index]))
-                        index++;
-                }
-                TotalWordsPrompt.Text = NumberOfEnteredWords.ToString();
-                // refactor
                 CurrentReferenceString = textInserter.InsertNextLine();
                 shownTextArea.Text = textInserter.GetCurrentLine();
                 textValidator.SetReferenceString(CurrentReferenceString);
@@ -478,19 +430,6 @@ namespace TypingTutor
                     //!
                 }
             } 
-        }
-
-        /////
-        ///     Delete this property LATER
-        /////
-        private void textInputArea_KeyDown(object sender, KeyEventArgs e)
-        {
-            
-        }
-
-        private void textInputArea_KeyUp(object sender, KeyEventArgs e)
-        {
-           
         }
     }
 }
