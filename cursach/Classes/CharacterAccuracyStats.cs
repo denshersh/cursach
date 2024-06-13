@@ -11,7 +11,7 @@ namespace Classes
         protected float UnitAccuracy;
         protected int WrongTypedUnits;
 
-        public CharacterAccuracyStats() : base(" % char accuracy") { WrongTypedUnits = 0; }
+        public CharacterAccuracyStats() : base(" %") { WrongTypedUnits = 0; }
 
         protected CharacterAccuracyStats(string ValName) : base(ValName) { }
 
