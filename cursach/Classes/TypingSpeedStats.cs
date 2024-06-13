@@ -13,7 +13,7 @@ namespace Classes
         private Stopwatch stopwatch;
         const float SecondsInAMinute = 60.0f;
 
-        public TypingSpeedStats() : base(" w/m")
+        public TypingSpeedStats() : base(" ch/m")
         {
             stopwatch = new Stopwatch();
         }
