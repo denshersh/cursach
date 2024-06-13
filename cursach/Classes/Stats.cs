@@ -8,7 +8,7 @@ namespace Classes
 {
     public abstract class Stats
     {
-        protected string StatUnitName;
+        public string StatUnitName { get; }
 
         public Stats(string statUnitName) {  StatUnitName = statUnitName; }
 
