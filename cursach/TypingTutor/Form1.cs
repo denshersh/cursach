@@ -27,6 +27,12 @@ namespace TypingTutor
         public Form1()
         {
             InitializeComponent();
+            this.FormBorderStyle = FormBorderStyle.Sizable;
+            this.MaximizeBox = true;
+            this.MinimizeBox = false;
+            this.MaximumSize = new Size(1920, 1080);
+            this.MinimumSize = new Size(880, 495);
+            this.ClientSize = new Size(944, 531);
             CAS = new CharacterAccuracyStats();
             NumberOfEnteredWords = 0;
             NumberOfWrongEnteredChars = 0;
