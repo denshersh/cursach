@@ -40,9 +40,9 @@ namespace TypingTutor
             CorrectCharFlag = true;
 
             textInserter = new TextInserter("..\\..\\..\\..\\texts\\txttxt.txt");
-            shownTextArea.Text = textInserter.InsertNextLine();
-            CurrentReferenceString = textInserter.GetCurrentLine();
-
+            CurrentReferenceString = textInserter.InsertNextLine();
+            shownTextArea.Text = textInserter.GetCurrentLine();
+            
             textValidator = new TextValidator(shownTextArea.Text);
             textInputArea.MaxLength = shownTextArea.Text.Length;
         }
@@ -172,6 +172,8 @@ namespace TypingTutor
             ButtonReady.Visible = false;
             textInputArea.Enabled = true;
             textInputArea.Focus();
+            CurrentInputString = string.Empty;
+            KeyHighlight();
             TSS.StartMonitoringSpeed();
         }
 
@@ -347,6 +349,7 @@ namespace TypingTutor
             bool StringPassed;
 
             StringPassed = textValidator.ValidateString(CurrentInputString);
+            // ==============================================================
             if (StringPassed)
             {
                 TSS.StopMonitoringSpeed();
@@ -376,11 +379,11 @@ namespace TypingTutor
                 }
                 TotalWordsPrompt.Text = NumberOfEnteredWords.ToString();
                 // refactor
-                textInputArea.Text = string.Empty;
-                shownTextArea.Text = textInserter.InsertNextLine();
-                CurrentReferenceString = textInserter.GetCurrentLine();
+                CurrentReferenceString = textInserter.InsertNextLine();
+                shownTextArea.Text = textInserter.GetCurrentLine();
                 textValidator.SetReferenceString(CurrentReferenceString);
                 textInputArea.MaxLength = shownTextArea.Text.Length;
+                textInputArea.Text = string.Empty;
                 TSS.StartMonitoringSpeed();
                 return;
             }
