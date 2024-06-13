@@ -216,7 +216,6 @@ namespace TypingTutor
             btnBackSlash.BackColor = System.Drawing.SystemColors.ControlLight;  
             btnLArrow.BackColor = System.Drawing.SystemColors.ControlLight;  
             btnRArrow.BackColor = System.Drawing.SystemColors.ControlLight;  
-<<<<<<< Updated upstream
             btnQMark.BackColor = System.Drawing.SystemColors.ControlLight;
             btn0.BackColor = System.Drawing.SystemColors.ControlLight;
             btn1.BackColor = System.Drawing.SystemColors.ControlLight;
@@ -229,11 +228,7 @@ namespace TypingTutor
             btn8.BackColor = System.Drawing.SystemColors.ControlLight;
             btn9.BackColor = System.Drawing.SystemColors.ControlLight;
         }
-=======
-            btnQMark.BackColor = System.Drawing.SystemColors.ControlLight;  
-        }
 
->>>>>>> Stashed changes
         private void KeyHighlight()
         {
             List<char> charForRshift = new List<char> { 'q', 'w', 'r', 't', 'a', 's', 'd', 'f', 'g', 'z', 'x', 'c', 'v', 'b' };
